@@ -1,0 +1,21 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'tailwindcss';
+
+@theme {
+  --color-steam-bg: #171a21;
+  --color-steam-card: #1b2838;
+  --color-steam-primary: #66c0f4;
+  --color-steam-accent: #2a475e;
+}
+
+html,
+body {
+  height: 100%;
+  background-color: var(--color-steam-bg);
+}
+
+body {
+  margin: 0;
+  color-scheme: dark;
+}

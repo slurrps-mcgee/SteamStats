@@ -1,0 +1,23 @@
+<div class="flex flex-col items-center gap-6 max-w-lg mx-auto">
+  @if (!session.hasActiveProfile()) {
+    <div class="rounded-2xl bg-steam-card/60 border border-dashed border-white/10 p-10 text-center text-slate-400 w-full">
+      Search for a Steam profile on the Dashboard first.
+    </div>
+  } @else if (loading()) {
+    <app-loading-spinner label="Picking a game..." />
+  } @else if (game(); as g) {
+    <div class="w-full rounded-2xl overflow-hidden bg-steam-card border border-white/5 shadow-xl">
+      <img [src]="g.headerUrl" [alt]="g.name" class="w-full object-cover" />
+      <div class="p-6 flex flex-col gap-2">
+        <h2 class="text-xl font-semibold text-white">{{ g.name }}</h2>
+        <p class="text-steam-primary">{{ g.playtimeForeverMinutes | playtime }} played</p>
+      </div>
+    </div>
+    <button mat-flat-button color="primary" class="!h-12 !px-8" (click)="randomize()">
+      <mat-icon class="mr-1">casino</mat-icon>
+      Randomize
+    </button>
+  } @else {
+    <p class="text-slate-400">No games found in this library.</p>
+  }
+</div>

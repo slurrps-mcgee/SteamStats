@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/DOCKERFILE
+    env_file:
+      - ./.env
+    expose:
+      - "3000"
+    # Intentionally no `ports:` mapping - the backend must only be reachable
+    # from other containers on `steamstats-net` (via the frontend's nginx
+    # reverse proxy), never directly from the host or the public internet.
+    networks:
+      - steamstats-net
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/DOCKERFILE
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - steamstats-net
+    restart: unless-stopped
+
+networks:
+  steamstats-net:
+    driver: bridge

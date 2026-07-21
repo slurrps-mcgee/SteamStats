@@ -1,0 +1,38 @@
+# syntax=docker/dockerfile:1
+
+# --- Build stage --------------------------------------------------------
+# Installs the full monorepo workspace (needed so TypeScript can resolve the
+# shared `@steamstats/shared` types) and compiles the backend to plain JS.
+FROM node:22-alpine AS build
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+COPY shared/package.json shared/package.json
+COPY backend/package.json backend/package.json
+COPY frontend/steamstats/package.json frontend/steamstats/package.json
+RUN npm ci
+
+COPY shared shared
+COPY backend backend
+RUN npm run build --workspace=@steamstats/shared
+RUN npm run build --workspace=backend
+
+# --- Runtime stage --------------------------------------------------------
+# The backend has no runtime dependency on `@steamstats/shared` (it is a
+# type-only package, fully erased at compile time), so the runtime image
+# only needs the backend's own production dependencies - not the monorepo
+# workspace or node_modules from the build stage.
+FROM node:22-alpine AS runtime
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY backend/package.json ./package.json
+RUN npm install --omit=dev && npm cache clean --force
+
+COPY --from=build /app/backend/dist ./dist
+
+RUN addgroup -S app && adduser -S app -G app
+USER app
+
+EXPOSE 3000
+CMD ["node", "dist/index.js"]

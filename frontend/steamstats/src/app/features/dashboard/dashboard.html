@@ -1,0 +1,69 @@
+<div class="flex flex-col gap-6">
+  <!-- Search card -->
+  <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5">
+    <app-search-bar (search)="onSearch($event)" />
+  </div>
+
+  @if (session.loading()) {
+    <app-loading-spinner label="Loading Steam profile..." />
+  } @else if (session.profile(); as profile) {
+    <!-- Profile summary -->
+    <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5">
+      <app-profile-summary [profile]="profile" />
+    </div>
+
+    <!-- Stat cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <app-stat-card
+        label="Total Games"
+        icon="videogame_asset"
+        [value]="library()?.stats?.totalGames ?? '-'"
+      />
+      <app-stat-card
+        label="Total Hours Played"
+        icon="schedule"
+        [value]="(library()?.stats?.totalPlaytimeMinutes | playtime) ?? '-'"
+      />
+      <app-stat-card
+        label="Recently Played"
+        icon="history"
+        [value]="library()?.stats?.recentlyPlayedCount ?? 0"
+      />
+      <app-stat-card label="Achievement Completion" icon="emoji_events" value="Coming soon" subtitle="Future feature" />
+    </div>
+
+    <!-- Recently played -->
+    <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-white">Recently Played</h2>
+        <a routerLink="/library" class="text-sm text-steam-primary hover:underline">View library</a>
+      </div>
+      @if (recentGames().length > 0) {
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          @for (game of recentGames(); track game.appId) {
+            <app-game-card [game]="game" />
+          }
+        </div>
+      } @else {
+        <p class="text-sm text-slate-500">No games played in the last 2 weeks.</p>
+      }
+    </div>
+
+    <!-- Random game preview -->
+    @if (randomGame(); as game) {
+      <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-white">Random Pick</h2>
+          <a routerLink="/random" class="text-sm text-steam-primary hover:underline">Randomize again</a>
+        </div>
+        <div class="max-w-xs">
+          <app-game-card [game]="game" />
+        </div>
+      </div>
+    }
+  } @else {
+    <div class="rounded-2xl bg-steam-card/60 border border-dashed border-white/10 p-10 text-center text-slate-400">
+      Enter a SteamID64 or profile URL above to get started.
+    </div>
+  }
+</div>

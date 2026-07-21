@@ -1,0 +1,32 @@
+<div class="flex flex-col gap-6">
+  @if (!session.hasActiveProfile()) {
+    <div class="rounded-2xl bg-steam-card/60 border border-dashed border-white/10 p-10 text-center text-slate-400">
+      Search for a Steam profile on the Dashboard first.
+    </div>
+  } @else if (loading()) {
+    <app-loading-spinner label="Crunching stats..." />
+  } @else {
+    <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5">
+      <h2 class="text-lg font-semibold text-white mb-4">Playtime Distribution</h2>
+      @if (topGames().length > 0) {
+        <div class="flex flex-col gap-3">
+          @for (game of topGames(); track game.appId) {
+            <div class="flex items-center gap-3">
+              <span class="w-40 truncate text-sm text-slate-300" [title]="game.name">{{ game.name }}</span>
+              <div class="flex-1 h-3 rounded-full bg-steam-accent/40 overflow-hidden">
+                <div class="h-full rounded-full bg-steam-primary" [style.width]="barWidth(game)"></div>
+              </div>
+              <span class="w-16 text-right text-xs text-slate-400">{{ game.playtimeForeverMinutes | playtime }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="text-sm text-slate-500">No playtime data available.</p>
+      }
+    </div>
+
+    <div class="rounded-2xl bg-steam-card/60 border border-dashed border-white/10 p-8 text-center text-slate-400">
+      Library by genre - coming soon.
+    </div>
+  }
+</div>
