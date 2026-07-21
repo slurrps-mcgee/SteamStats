@@ -1,0 +1,54 @@
+name: Build and Deploy
+
+on:
+  workflow_dispatch: # Allow manual trigger
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    if: github.actor == 'slurrps-mcgee'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Extract versions from package.json
+      id: version
+      shell: bash
+      run: |
+        echo "Extracting package versions..."
+
+        BACKEND_VERSION=$(node -p "require('./backend/package.json').version")
+        echo "BACKEND_VERSION=$BACKEND_VERSION" >> $GITHUB_ENV
+        echo "Backend version: $BACKEND_VERSION"
+
+        FRONTEND_VERSION=$(node -p "require('./frontend/steamstats/package.json').version")
+        echo "FRONTEND_VERSION=$FRONTEND_VERSION" >> $GITHUB_ENV
+        echo "Frontend version: $FRONTEND_VERSION"
+
+    - name: Build and push Backend image
+      uses: docker/build-push-action@v6
+      with:
+        context: ./backend
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_USERNAME }}/steamstats-backend:${{ env.BACKEND_VERSION }}
+          ${{ secrets.DOCKER_USERNAME }}/steamstats-backend:latest
+
+    - name: Build and push Frontend image
+      uses: docker/build-push-action@v6
+      with:
+        context: ./frontend
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_USERNAME }}/steamstats-frontend:${{ env.FRONTEND_VERSION }}
+          ${{ secrets.DOCKER_USERNAME }}/steamstats-frontend:latest
