@@ -36,7 +36,7 @@ jobs:
         echo "Frontend version: $FRONTEND_VERSION"
 
     - name: Build and push Backend image
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v5
       with:
         context: ./backend
         push: true
@@ -45,7 +45,7 @@ jobs:
           ${{ secrets.DOCKER_USERNAME }}/steamstats-backend:latest
 
     - name: Build and push Frontend image
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v5
       with:
         context: ./frontend
         push: true
