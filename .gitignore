@@ -142,5 +142,5 @@ vite.config.ts.timestamp-*
 **/dist/
 shared/dist/
 backend/dist/
-frontend/steamstats/dist/
+frontend/dist/
 **/.angular/

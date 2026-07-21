@@ -471,7 +471,7 @@ nginx Container
 The final output is:
 
 ```
-frontend/steamstats/dist/
+frontend/dist/
 ```
 
 which contains:
