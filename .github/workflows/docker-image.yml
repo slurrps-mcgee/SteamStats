@@ -31,7 +31,7 @@ jobs:
         echo "BACKEND_VERSION=$BACKEND_VERSION" >> $GITHUB_ENV
         echo "Backend version: $BACKEND_VERSION"
 
-        FRONTEND_VERSION=$(node -p "require('./frontend/steamstats/package.json').version")
+        FRONTEND_VERSION=$(node -p "require('./frontend/package.json').version")
         echo "FRONTEND_VERSION=$FRONTEND_VERSION" >> $GITHUB_ENV
         echo "Frontend version: $FRONTEND_VERSION"
 
