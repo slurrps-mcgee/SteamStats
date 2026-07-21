@@ -17,17 +17,17 @@
       <app-stat-card
         label="Total Games"
         icon="videogame_asset"
-        [value]="library()?.stats?.totalGames ?? '-'"
+        [value]="session.library()?.stats?.totalGames ?? '-'"
       />
       <app-stat-card
         label="Total Hours Played"
         icon="schedule"
-        [value]="(library()?.stats?.totalPlaytimeMinutes | playtime) ?? '-'"
+        [value]="(session.library()?.stats?.totalPlaytimeMinutes | playtime) ?? '-'"
       />
       <app-stat-card
         label="Recently Played"
         icon="history"
-        [value]="library()?.stats?.recentlyPlayedCount ?? 0"
+        [value]="session.library()?.stats?.recentlyPlayedCount ?? 0"
       />
       <app-stat-card label="Achievement Completion" icon="emoji_events" value="Coming soon" subtitle="Future feature" />
     </div>
@@ -38,9 +38,9 @@
         <h2 class="text-lg font-semibold text-white">Recently Played</h2>
         <a routerLink="/library" class="text-sm text-steam-primary hover:underline">View library</a>
       </div>
-      @if (recentGames().length > 0) {
+      @if (session.recentGames().length > 0) {
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          @for (game of recentGames(); track game.appId) {
+          @for (game of session.recentGames(); track game.appId) {
             <app-game-card [game]="game" />
           }
         </div>
@@ -50,7 +50,7 @@
     </div>
 
     <!-- Random game preview -->
-    @if (randomGame(); as game) {
+    @if (session.randomGame(); as game) {
       <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-white">Random Pick</h2>

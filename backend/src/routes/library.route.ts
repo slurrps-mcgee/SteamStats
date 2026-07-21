@@ -6,7 +6,10 @@ import { steamIdParamSchema, type SteamIdParams } from '../schemas/steam-id-para
 const libraryRoute: FastifyPluginAsync = async (fastify) => {
   fastify.get<{ Params: SteamIdParams }>(
     '/library/:steamId',
-    { schema: { params: steamIdParamSchema } },
+    {
+      config: { rateLimit: { max: 10, timeWindow: "1 minute" } },
+      schema: { params: steamIdParamSchema } 
+    },
     async (request): Promise<LibraryResponse> => {
       return fastify.steamService.getOwnedGames(request.params.steamId);
     },

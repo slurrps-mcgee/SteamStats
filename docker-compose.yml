@@ -2,7 +2,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: backend/DOCKERFILE
+      dockerfile: backend/dockerfile
     env_file:
       - ./.env
     expose:
@@ -17,7 +17,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: frontend/DOCKERFILE
+      dockerfile: frontend/dockerfile
     ports:
       - "8080:80"
     depends_on:

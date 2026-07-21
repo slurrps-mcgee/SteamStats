@@ -8,24 +8,30 @@ import steamServicePlugin from './plugins/steam-service.plugin';
 import v1Routes from './routes';
 import { SteamApiError } from './services/steam-api.client';
 import { SteamNotFoundError } from './services/steam.service';
+import cachePlugin from './plugins/cache.plugin';
 
 /** Builds (but does not start) a fully configured Fastify instance. */
 export function buildApp(config: AppConfig): FastifyInstance {
+  // Create a new Fastify instance with the provided configuration.
   const fastify = Fastify({
     logger: {
       level: config.nodeEnv === 'production' ? 'info' : 'debug',
     },
   });
 
+  // Register application plugins in the correct order.
   fastify.register(configPlugin(config));
   fastify.register(sensible);
   fastify.register(corsPlugin);
   fastify.register(rateLimitPlugin);
+  fastify.register(cachePlugin);
   fastify.register(steamServicePlugin);
   fastify.register(v1Routes, { prefix: '/api/v1' });
 
+  // Health check endpoint to verify that the server is running.
   fastify.get('/health', async () => ({ status: 'ok' }));
 
+  // Set a custom error handler to manage different types of errors consistently.
   fastify.setErrorHandler((error: FastifyError, _request, reply) => {
     if (error instanceof SteamNotFoundError) {
       reply.status(404).send({
@@ -61,6 +67,7 @@ export function buildApp(config: AppConfig): FastifyInstance {
       message: config.nodeEnv === 'production' ? 'Something went wrong' : error.message,
     });
   });
-
+  
+  // Return the fully configured Fastify instance.
   return fastify;
 }
