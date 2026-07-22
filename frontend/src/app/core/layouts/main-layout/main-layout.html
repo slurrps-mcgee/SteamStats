@@ -1,30 +1,80 @@
-<mat-sidenav-container class="h-screen bg-steam-bg">
-  <mat-sidenav mode="side" opened class="!bg-steam-card !border-r !border-white/5 !w-64">
-    <div class="flex items-center gap-2 px-5 py-5">
-      <mat-icon class="!text-steam-primary">sports_esports</mat-icon>
-      <span class="text-lg font-bold text-white tracking-tight">SteamStats</span>
-    </div>
-    <mat-nav-list class="!px-3">
-      @for (item of navItems; track item.path) {
-        <a
-          mat-list-item
-          [routerLink]="item.path"
-          routerLinkActive="!bg-steam-primary/15 !text-steam-primary"
-          class="!rounded-lg !mb-1 !text-slate-300"
-        >
-          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-          <span matListItemTitle>{{ item.label }}</span>
-        </a>
-      }
-    </mat-nav-list>
-  </mat-sidenav>
+<div class="layout">
+  <!-- Toolbar -->
+  <mat-toolbar class="toolbar">
+    <button
+      mat-icon-button
+      (click)="toggleNav()">
 
-  <mat-sidenav-content class="!bg-steam-bg">
-    <mat-toolbar class="!bg-transparent !text-white !border-b !border-white/5">
-      <span class="font-medium">Steam Companion Dashboard</span>
-    </mat-toolbar>
-    <main class="p-6 max-w-7xl mx-auto">
-      <router-outlet />
-    </main>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+      <mat-icon>
+        menu
+      </mat-icon>
+    </button>
+
+    <span class="title">
+      Steam Stats
+    </span>
+  </mat-toolbar>
+
+  <!-- Navigation -->
+  <mat-sidenav-container
+    class="container">
+
+    <mat-sidenav
+      #snav
+      [mode]="isMobile() ? 'over' : 'side'"
+      [opened]="!isMobile()"
+      class="sidenav"
+      [style.width.px]="
+        isMobile()
+        ? 260
+        : expanded()
+          ? 240
+          : 72
+          ">
+
+      <mat-nav-list>
+        @for (item of navItems; track item.path) {
+          <a
+            mat-list-item
+            [routerLink]="item.path"
+            routerLinkActive="active-link"
+            [matTooltip]="!expanded() && !isMobile() ? item.label : ''"
+            matTooltipPosition="right"
+            (click)="closeMobile()"
+            class="nav-item">
+
+            <mat-icon matListItemIcon>
+              {{ item.icon }}
+            </mat-icon>
+
+            <span
+              matListItemTitle
+              class="label"
+              [class.collapsed]="
+                !expanded() && !isMobile()
+              ">
+              {{ item.label }}
+            </span>
+          </a>
+        }
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <!-- Content -->
+    <mat-sidenav-content
+      class="content"
+      [style.margin-left.px]="
+        isMobile()
+        ? 0
+        : expanded()
+          ? 240
+          : 72
+          ">
+
+      <main class="page">
+        <router-outlet />
+      </main>
+
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

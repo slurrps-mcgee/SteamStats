@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import type { SteamProfile } from '@steamstats/shared';
+import { SteamDatePipe } from '../../../shared/pipes/steamdate.pipe';
+import { DatePipe } from '@angular/common';
 
 const STATUS_LABELS: Record<number, string> = {
   0: 'Offline',
@@ -36,8 +38,14 @@ const STATUS_LABELS: Record<number, string> = {
           {{ statusLabel() }}
         </div>
       </div>
+      <div>
+        <p>Created On: {{ profile().createdAt| steamDate | date:'medium' }}</p>
+        <p>Last Login: {{ profile().lastLogoffAt| steamDate | date:'medium' }}</p>
+        <!-- Additional profile actions or information can go here -->
+      </div>
     </div>
   `,
+  imports: [SteamDatePipe, DatePipe],
 })
 export class ProfileSummary {
   readonly profile = input.required<SteamProfile>();
