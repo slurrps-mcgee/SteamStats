@@ -12,3 +12,4 @@ export * from './types/library-stats.type';
 export * from './types/random-game.type';
 export * from './types/resolve-steam-id.type';
 export * from './types/api-error.type';
+export * from './types/wishlist-game.type';

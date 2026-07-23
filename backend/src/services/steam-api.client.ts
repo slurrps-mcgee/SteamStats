@@ -1,8 +1,10 @@
 import type {
+  SteamAppListResponse,
   SteamOwnedGamesResponse,
   SteamPlayerSummariesResponse,
   SteamRecentlyPlayedGamesResponse,
   SteamResolveVanityUrlResponse,
+  SteamWishlistResponse,
 } from '../types/steam-api.types';
 
 const STEAM_API_BASE_URL = 'https://api.steampowered.com';
@@ -25,6 +27,11 @@ export class SteamApiError extends Error {
  */
 export class SteamApiClient {
   constructor(private readonly apiKey: string) {}
+
+  async getAppList(): Promise<SteamAppListResponse> {
+    return this.get<SteamAppListResponse>('/IStoreService/GetAppList/v1/', {});
+  }
+  
 
   async resolveVanityUrl(vanityName: string): Promise<SteamResolveVanityUrlResponse> {
     return this.get<SteamResolveVanityUrlResponse>('/ISteamUser/ResolveVanityURL/v1/', {
@@ -51,6 +58,12 @@ export class SteamApiClient {
       '/IPlayerService/GetRecentlyPlayedGames/v1/',
       { steamid: steamId64 },
     );
+  }
+
+  async getWishlistGames(steamId64: string): Promise<SteamWishlistResponse> {
+    return this.get<SteamWishlistResponse>('/IWishlistService/GetWishlist/v1/', {
+      steamid: steamId64,
+    });
   }
 
   /**

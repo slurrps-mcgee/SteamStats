@@ -1,13 +1,24 @@
 import fp from 'fastify-plugin';
-import type { FastifyPluginAsync } from 'fastify';
 import CacheService from '../services/cache.service';
 
-// Fastify plugin to add a cache service to the Fastify instance.
-const cachePlugin: FastifyPluginAsync = async (fastify) => {
+
+export default fp(async (fastify) => {
+
+  const cache =
+    new CacheService();
+
+  await cache.load();
+
   fastify.decorate(
     'cache',
-    new CacheService()
+    cache,
   );
-};
 
-export default fp(cachePlugin, {name: 'cache-service',});
+  fastify.addHook(
+    'onClose',
+    async () => {
+      await cache.save();
+    },
+  );
+
+});

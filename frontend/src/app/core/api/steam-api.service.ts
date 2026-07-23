@@ -17,7 +17,7 @@ export class SteamApiService {
 
   /** Resolves a SteamID64, profile URL, or vanity name into a SteamID64. */
   resolveSteamId(input: string): Observable<{ steamId: string }> {
-    return this.http.post<{ steamId: string }>(`${API_BASE_URL}/resolve`, { input });
+    return this.http.post<{ steamId: string }>(`${API_BASE_URL}/profile/resolve`, { input });
   }
 
   /** Fetches the normalized player profile summary. */
@@ -32,11 +32,11 @@ export class SteamApiService {
 
   /** Fetches games played within the last 2 weeks. */
   getRecentlyPlayed(steamId: string): Observable<RecentlyPlayedGame[]> {
-    return this.http.get<RecentlyPlayedGame[]>(`${API_BASE_URL}/recent/${steamId}`);
+    return this.http.get<RecentlyPlayedGame[]>(`${API_BASE_URL}/library/${steamId}/recent`);
   }
 
   /** Fetches a single random game from the player's library. */
   getRandomGame(steamId: string): Observable<OwnedGame> {
-    return this.http.get<OwnedGame>(`${API_BASE_URL}/random/${steamId}`);
+    return this.http.get<OwnedGame>(`${API_BASE_URL}/library/${steamId}/random`);
   }
 }

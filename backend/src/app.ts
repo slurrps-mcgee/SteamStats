@@ -4,11 +4,13 @@ import type { AppConfig } from './config/env';
 import { configPlugin } from './plugins/config.plugin';
 import corsPlugin from './plugins/cors.plugin';
 import rateLimitPlugin from './plugins/rate-limit.plugin';
-import steamServicePlugin from './plugins/steam-service.plugin';
+import steamServicePlugin from './plugins/steam.plugin';
 import v1Routes from './routes';
 import { SteamApiError } from './services/steam-api.client';
-import { SteamNotFoundError } from './services/steam.service';
+import { SteamNotFoundError } from './helpers/error.helper';
 import cachePlugin from './plugins/cache.plugin';
+import swaggerPlugin from './plugins/swagger.plugin';
+import helmetPlugin from './plugins/helmet.plugin';
 
 /** Builds (but does not start) a fully configured Fastify instance. */
 export function buildApp(config: AppConfig): FastifyInstance {
@@ -21,12 +23,15 @@ export function buildApp(config: AppConfig): FastifyInstance {
 
   // Register application plugins in the correct order.
   fastify.register(configPlugin(config));
+  fastify.register(helmetPlugin);
   fastify.register(sensible);
   fastify.register(corsPlugin);
   fastify.register(rateLimitPlugin);
   fastify.register(cachePlugin);
+  fastify.register(swaggerPlugin);
   fastify.register(steamServicePlugin);
   fastify.register(v1Routes, { prefix: '/api/v1' });
+
 
   // Health check endpoint to verify that the server is running.
   fastify.get('/health', async () => ({ status: 'ok' }));

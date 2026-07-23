@@ -22,5 +22,9 @@ export const routes: Routes = [
     path: 'settings',
     loadComponent: () => import('./features/settings/settings').then((m) => m.Settings),
   },
+  {
+    path: 'game-details/:id',
+    loadComponent: () => import('./features/gamedetails/game-details/game-details').then((m) => m.GameDetails),
+  },
   { path: '**', redirectTo: 'dashboard' },
 ];

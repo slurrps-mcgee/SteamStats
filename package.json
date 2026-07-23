@@ -14,5 +14,10 @@
     "dev:frontend": "npm run start --workspace=frontend",
     "build:backend": "npm run build:shared && npm run build --workspace=backend",
     "build:frontend": "npm run build:shared && npm run build --workspace=frontend"
+  },
+  "dependencies": {
+    "@fastify/helmet": "^13.1.0",
+    "@fastify/swagger": "^9.8.1",
+    "@fastify/swagger-ui": "^6.1.0"
   }
 }

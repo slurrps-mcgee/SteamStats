@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SteamSessionService } from '../../core/services/steam-session.service';
 import { LoadingSpinner } from '../../shared/components/loading-spinner/loading-spinner';
 import { GameCard } from '../../shared/components/game-card/game-card';
@@ -32,6 +32,7 @@ export class Dashboard {
 
   protected readonly session =
     inject(SteamSessionService);
+  protected readonly router = inject(Router);
 
 
   constructor() {
@@ -54,4 +55,7 @@ export class Dashboard {
     this.session.resolveAndLoad(input);
   }
 
+  viewItem(itemId: number) {
+    this.router.navigate(['/game-details', itemId]);
+  }
 }
