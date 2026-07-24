@@ -12,12 +12,12 @@ class CacheService {
 
 
   constructor() {
-  this.cache = new LRUCache<string, any>({
-    max: 1000,
-    allowStale: false,
-    updateAgeOnGet: true,
-  });
-}
+    this.cache = new LRUCache<string, any>({
+      max: 1000,
+      allowStale: false,
+      updateAgeOnGet: true,
+    });
+  }
 
   async load() {
     try {
@@ -122,8 +122,20 @@ class CacheService {
     this.cache.delete(key);
   }
 
-  clear() {
+  async clear() {
+    // Clear memory
     this.cache.clear();
+
+    // Remove persisted cache
+    try {
+      await fs.unlink(this.filePath);
+      console.log('Cache cleared');
+    } catch (error: any) {
+      // Ignore if file does not exist
+      if (error.code !== 'ENOENT') {
+        throw error;
+      }
+    }
   }
 }
 

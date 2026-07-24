@@ -144,3 +144,6 @@ shared/dist/
 backend/dist/
 frontend/dist/
 **/.angular/
+
+# Cache file for the backend service
+cache.json
