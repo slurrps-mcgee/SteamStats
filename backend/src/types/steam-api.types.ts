@@ -55,12 +55,8 @@ export interface SteamPlayerSummary {
   avatar: string;
   avatarmedium: string;
   avatarfull: string;
-
-  // Steam returns a number here
-  personastate: number;
-
+  personastate: number; // Steam returns a number here
   communityvisibilitystate: number;
-
   lastlogoff?: number;
   timecreated?: number;
   loccountrycode?: string;
@@ -76,15 +72,10 @@ export interface SteamPlayerSummariesResponse {
 
 export interface SteamOwnedGame {
   appid: number;
-
   name?: string;
-
   playtime_forever: number;
-
   playtime_2weeks?: number;
-
   img_icon_url?: string;
-
   rtime_last_played?: number;
 }
 
@@ -92,7 +83,6 @@ export interface SteamOwnedGame {
 export interface SteamOwnedGamesResponse {
   response: {
     game_count?: number;
-
     games?: SteamOwnedGame[];
   };
 }
@@ -101,7 +91,6 @@ export interface SteamOwnedGamesResponse {
 export interface SteamRecentlyPlayedGamesResponse {
   response: {
     total_count?: number;
-
     games?: SteamOwnedGame[];
   };
 }
@@ -109,9 +98,7 @@ export interface SteamRecentlyPlayedGamesResponse {
 
 export interface SteamWishlistGame {
   appid: number;
-
   priority?: number;
-
   date_added?: number;
 }
 
@@ -119,7 +106,6 @@ export interface SteamWishlistGame {
 export interface SteamWishlistResponse {
   response: {
     game_count?: number;
-
     items?: SteamWishlistGame[];
   };
 }

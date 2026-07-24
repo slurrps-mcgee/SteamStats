@@ -6,19 +6,9 @@ import type {
   SteamResolveVanityUrlResponse,
   SteamWishlistResponse,
 } from '../types/steam-api.types';
+import { SteamApiError } from '../types/error.types'
 
 const STEAM_API_BASE_URL = 'https://api.steampowered.com';
-
-/** Thrown when the Steam Web API returns an unexpected or failed response. */
-export class SteamApiError extends Error {
-  constructor(
-    message: string,
-    public readonly statusCode: number = 502,
-  ) {
-    super(message);
-    this.name = 'SteamApiError';
-  }
-}
 
 /**
  * Thin, low-level HTTP client for the Steam Web API. Every method here maps
@@ -32,7 +22,7 @@ export class SteamApiClient {
     return this.get<SteamAppListResponse>('/IStoreService/GetAppList/v1/', {});
   }
   
-
+  //Profile Specific
   async resolveVanityUrl(vanityName: string): Promise<SteamResolveVanityUrlResponse> {
     return this.get<SteamResolveVanityUrlResponse>('/ISteamUser/ResolveVanityURL/v1/', {
       vanityurl: vanityName,
@@ -45,6 +35,7 @@ export class SteamApiClient {
     });
   }
 
+  //Library Specific
   async getOwnedGames(steamId64: string): Promise<SteamOwnedGamesResponse> {
     return this.get<SteamOwnedGamesResponse>('/IPlayerService/GetOwnedGames/v1/', {
       steamid: steamId64,

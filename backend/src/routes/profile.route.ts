@@ -24,8 +24,6 @@ import {
  * - Steam ID resolution
  */
 const profileRoute: FastifyPluginAsync = async (fastify) => {
-
-
   /**
    * GET /api/v1/profile/:steamId
    *
@@ -34,6 +32,12 @@ const profileRoute: FastifyPluginAsync = async (fastify) => {
   fastify.get<{ Params: SteamIdParams }>(
     '/profile/:steamId',
     {
+      config: {
+        rateLimit: {
+          max: 10,
+          timeWindow: '1 minute',
+        },
+      },
       schema: {
         params: steamIdParamSchema,
       },
@@ -49,8 +53,6 @@ const profileRoute: FastifyPluginAsync = async (fastify) => {
 
     },
   );
-
-
 
   /**
    * POST /api/v1/profile/resolve

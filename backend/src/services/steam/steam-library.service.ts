@@ -12,7 +12,7 @@ import { SteamApiClient } from '../steam-api.client';
 // } from './steam-app.service';
 
 import type CacheService from '../cache.service';
-import { SteamNotFoundError } from '../../helpers/error.helper';
+import { SteamNotFoundError } from '../../types/error.types';
 
 import { isSteamId64 } from '../../utils/steam-id.util';
 

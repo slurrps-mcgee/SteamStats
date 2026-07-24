@@ -13,7 +13,7 @@ import {
 } from '../../utils/steam-id.util';
 
 import type CacheService from '../cache.service';
-import { SteamNotFoundError } from '../../helpers/error.helper';
+import { SteamNotFoundError } from '../../types/error.types';
 
 
 function normalizePersonaState(
@@ -50,7 +50,7 @@ export class SteamUserService {
 
     return this.cache.remember(
       `resolve:${rawInput}`,
-      1000 * 60 * 60 * 24,
+      1000 * 60 * 60 * 24, // 1 day
       async () => {
 
         const parsed =

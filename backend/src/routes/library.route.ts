@@ -22,8 +22,6 @@ import {
  * - Future library statistics
  */
 const libraryRoute: FastifyPluginAsync = async (fastify) => {
-
-
   /**
    * GET /api/v1/library/:steamId
    *
@@ -108,6 +106,25 @@ const libraryRoute: FastifyPluginAsync = async (fastify) => {
         request.params.steamId,
       );
 
+    },
+  );
+
+  fastify.get(
+    '/library/refresh',
+    {
+      config: {
+        rateLimit: {
+          max: 10,
+          timeWindow: '1 minute',
+        },
+      },
+    },
+
+    async (
+      request,
+    ): Promise<{ message: string; status: number }> => {
+      await fastify.steam.apps.refreshApps();
+      return { message: "SteamApps list refreshed successfully", status: 200 };
     },
   );
 

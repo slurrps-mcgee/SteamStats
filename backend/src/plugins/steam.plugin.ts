@@ -6,6 +6,7 @@ import { SteamAppService } from "../services/steam/steam-app.service";
 import { SteamLibraryService } from "../services/steam/steam-library.service";
 import { SteamGameService } from "../services/steam/steam-game.service";
 import { SteamUserService } from "../services/steam/steam-user.service";
+import { SteamStoreClient } from '../services/steam-store.client';
 
 
 declare module 'fastify' {
@@ -23,38 +24,41 @@ declare module 'fastify' {
 }
 
 export default fp(async fastify => {
-  const client =
+  const apiClient =
     new SteamApiClient(
       fastify.config.steamApiKey
     );
+  
+  const storeClient =
+    new SteamStoreClient();
 
   const apps =
     new SteamAppService(
-      client,
+      apiClient,
       fastify.cache
     );
 
   const user =
     new SteamUserService(
-      client,
+      apiClient,
       fastify.cache
     );
 
   const library =
     new SteamLibraryService(
-      client,
+      apiClient,
       fastify.cache
     );
 
   const achievements =
     new SteamAchievementService(
-      client,
+      apiClient,
       fastify.cache
     );
 
   const games =
     new SteamGameService(
-      client,
+      storeClient,
       fastify.cache
     );
 

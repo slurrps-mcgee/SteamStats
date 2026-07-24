@@ -26,7 +26,7 @@ export class SteamAppService {
 
     return this.cache.remember(
       'steam:apps',
-      undefined,
+      undefined, // no expiration, cache indefinitely
       async () => {
 
         const result =
@@ -37,7 +37,10 @@ export class SteamAppService {
     );
   }
 
-
+  async refreshApps(): Promise<SteamAppList[]> {
+    this.cache.delete('steam:apps');
+    return this.getApps();
+  }
 
 //   async getAppName(
 //     appId: number,
