@@ -1,0 +1,52 @@
+.about-collapse--collapsed {
+  max-height: 28rem;
+  overflow: hidden;
+}
+
+.about-fade {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-steam-card) 95%, transparent),
+    transparent
+  );
+}
+
+.prose-steam {
+  :where(h1, h2, h3, h4, h5, strong, b) {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  :where(h1, h2, h3, h4, h5) {
+    margin: 1.25rem 0 0.75rem;
+  }
+
+  :where(p, ul, ol) {
+    margin: 0 0 1rem;
+  }
+
+  :where(ul, ol) {
+    padding-left: 1.25rem;
+  }
+
+  :where(li) {
+    margin-bottom: 0.35rem;
+  }
+
+  :where(a) {
+    color: var(--color-steam-primary);
+    text-decoration: underline;
+  }
+
+  :where(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.25rem 0;
+    display: block;
+  }
+
+  :where(br) {
+    content: '';
+  }
+}

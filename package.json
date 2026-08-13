@@ -1,6 +1,6 @@
 {
   "name": "steamstats",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "description": "SteamStats monorepo - Angular frontend, Fastify backend, and shared TypeScript types.",
   "workspaces": [
@@ -16,8 +16,5 @@
     "build:frontend": "npm run build:shared && npm run build --workspace=frontend"
   },
   "dependencies": {
-    "@fastify/helmet": "^13.1.0",
-    "@fastify/swagger": "^9.8.1",
-    "@fastify/swagger-ui": "^6.1.0"
   }
 }

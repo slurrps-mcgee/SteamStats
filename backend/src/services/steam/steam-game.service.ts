@@ -15,12 +15,9 @@ export class SteamGameService {
     async getGameDetails(
         appId: number,
     ): Promise<SteamGameDetails> {
-        //TODO: This is for testing only
-        this.cache.delete(`library:${appId}`);
-
         return this.cache.remember(
-            `library:${appId}`,
-            1000 * 60 * 60 * 24, // 1 day
+            `game:${appId}`,
+            1000 * 60 * 60 * 24 * 2, // 2 days
             async () => {
                 const response =
                     await this.steamStoreClient.getAppDetails(appId);

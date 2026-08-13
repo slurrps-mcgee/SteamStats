@@ -1,0 +1,210 @@
+@if (store.loading()) {
+  <app-loading-spinner label="Loading game details..." />
+} @else if (store.error(); as message) {
+  <div class="rounded-2xl bg-steam-card/60 border border-dashed border-red-500/30 p-10 text-center">
+    <p class="text-red-300 mb-4">{{ message }}</p>
+    <a routerLink="/library" mat-stroked-button color="primary">Back to library</a>
+  </div>
+} @else if (store.active(); as details) {
+  <div class="game-details flex flex-col gap-6">
+    <!-- Hero: title/meta first, then full-width header image -->
+    <section class="rounded-2xl border border-white/5 bg-steam-card shadow-xl overflow-hidden">
+      <div class="p-5 sm:p-8 flex flex-col gap-4">
+        <a routerLink="/library" class="text-sm text-steam-primary hover:underline w-fit">
+          ← Back to library
+        </a>
+
+        <h1 class="text-3xl sm:text-4xl font-semibold text-white leading-tight">{{ details.name }}</h1>
+
+        <div class="flex flex-wrap items-center gap-2 text-sm text-slate-300">
+          @if (details.isFree) {
+            <span class="rounded-md bg-emerald-500/20 text-emerald-300 px-2 py-0.5">Free to Play</span>
+          } @else if (details.price; as price) {
+            <span class="rounded-md bg-steam-accent/80 text-steam-primary px-2 py-0.5 font-medium">
+              @if (price.discountPercent > 0) {
+                <span class="text-emerald-300 mr-2">-{{ price.discountPercent }}%</span>
+                <span class="line-through text-slate-400 mr-2">{{ price.initialFormatted }}</span>
+              }
+              {{ price.finalFormatted }}
+            </span>
+          }
+
+          @if (details.releaseDate.comingSoon) {
+            <span class="rounded-md bg-amber-500/20 text-amber-200 px-2 py-0.5">Coming soon</span>
+          } @else if (details.releaseDate.date) {
+            <span class="text-slate-400">Released {{ details.releaseDate.date }}</span>
+          }
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          @for (genre of details.genres; track genre.id) {
+            <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+              {{ genre.description }}
+            </span>
+          }
+        </div>
+
+        <div class="flex flex-wrap items-center gap-4">
+          @for (platform of platformLabels(); track platform.label) {
+            <span class="inline-flex items-center gap-1 text-slate-300 text-sm">
+              <mat-icon class="!text-base !w-4 !h-4 text-steam-primary">{{ platform.icon }}</mat-icon>
+              {{ platform.label }}
+            </span>
+          }
+
+          @if (details.metacritic; as metacritic) {
+            <a
+              [href]="metacritic.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-md bg-yellow-500/15 text-yellow-200 px-2 py-1 text-sm hover:bg-yellow-500/25"
+            >
+              Metacritic {{ metacritic.score }}
+            </a>
+          }
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <a
+            mat-flat-button
+            color="primary"
+            [href]="steamStoreUrl(details.appId)"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View on Steam
+          </a>
+          @if (details.website) {
+            <a
+              mat-stroked-button
+              color="primary"
+              [href]="details.website"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Official site
+            </a>
+          }
+        </div>
+      </div>
+
+      <img
+        [src]="details.headerImage"
+        [alt]="details.name"
+        class="w-full object-cover aspect-[460/215] border-t border-white/5"
+      />
+    </section>
+
+    <!-- Meta grid -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="rounded-2xl bg-steam-card/80 border border-white/5 p-4">
+        <div class="text-xs uppercase tracking-wide text-slate-500 mb-1">Developers</div>
+        <div class="text-sm text-white">{{ details.developers.join(', ') || '—' }}</div>
+      </div>
+      <div class="rounded-2xl bg-steam-card/80 border border-white/5 p-4">
+        <div class="text-xs uppercase tracking-wide text-slate-500 mb-1">Publishers</div>
+        <div class="text-sm text-white">{{ details.publishers.join(', ') || '—' }}</div>
+      </div>
+      <div class="rounded-2xl bg-steam-card/80 border border-white/5 p-4">
+        <div class="text-xs uppercase tracking-wide text-slate-500 mb-1">App ID</div>
+        <div class="text-sm text-white">{{ details.appId }}</div>
+      </div>
+      <div class="rounded-2xl bg-steam-card/80 border border-white/5 p-4">
+        <div class="text-xs uppercase tracking-wide text-slate-500 mb-1">Achievements</div>
+        <div class="text-sm text-white">{{ details.achievements?.total ?? '—' }}</div>
+      </div>
+    </section>
+
+    <!-- Screenshots -->
+    @if (details.screenshots.length > 0) {
+      <section class="rounded-2xl bg-steam-card/80 border border-white/5 p-5 flex flex-col gap-4">
+        <h2 class="text-lg font-semibold text-white">Screenshots</h2>
+
+        @if (selectedScreenshot(); as full) {
+          <img
+            [src]="full"
+            [alt]="details.name + ' screenshot'"
+            class="w-full max-h-[480px] object-contain rounded-xl bg-black/40 border border-white/5"
+          />
+        }
+
+        <div class="flex gap-3 overflow-x-auto pb-1">
+          @for (shot of details.screenshots; track shot.id) {
+            <button
+              type="button"
+              class="shrink-0 rounded-lg overflow-hidden border transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-steam-primary/60"
+              [class.border-steam-primary]="selectedScreenshot() === shot.full"
+              [class.border-white/10]="selectedScreenshot() !== shot.full"
+              (click)="selectScreenshot(shot.full)"
+            >
+              <img
+                [src]="shot.thumbnail"
+                [alt]="'Screenshot ' + shot.id"
+                class="h-20 w-auto object-cover"
+                loading="lazy"
+              />
+            </button>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Categories -->
+    @if (details.categories.length > 0) {
+      <section class="rounded-2xl bg-steam-card/80 border border-white/5 p-5">
+        <h2 class="text-lg font-semibold text-white mb-3">Features</h2>
+        <div class="flex flex-wrap gap-2">
+          @for (category of details.categories; track category.id) {
+            <span class="rounded-md bg-steam-accent/60 text-slate-200 px-2.5 py-1 text-xs">
+              {{ category.description }}
+            </span>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- About this game -->
+    @if (safeDescription(); as description) {
+      <section class="rounded-2xl bg-steam-card/80 border border-white/5 p-5">
+        <h2 class="text-lg font-semibold text-white mb-4 border-b border-white/10 pb-3">About this game</h2>
+
+        <div class="about-collapse relative" [class.about-collapse--collapsed]="needsAboutReadMore() && !aboutExpanded()">
+          <div class="game-about prose-steam text-slate-300 text-sm leading-relaxed" [innerHTML]="description"></div>
+          @if (needsAboutReadMore() && !aboutExpanded()) {
+            <div class="about-fade pointer-events-none absolute inset-x-0 bottom-0 h-24"></div>
+          }
+        </div>
+
+        @if (needsAboutReadMore()) {
+          <div class="flex justify-center pt-4">
+            <button
+              type="button"
+              class="text-sm font-medium uppercase tracking-wide text-steam-primary hover:underline"
+              (click)="toggleAbout()"
+            >
+              {{ aboutExpanded() ? 'Show less' : 'Read more' }}
+            </button>
+          </div>
+        }
+      </section>
+    }
+
+    <!-- System requirements -->
+    @if (safeMinimumReqs() || safeRecommendedReqs()) {
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        @if (safeMinimumReqs(); as minimum) {
+          <div class="rounded-2xl bg-steam-card/80 border border-white/5 p-5">
+            <h2 class="text-lg font-semibold text-white mb-3">Minimum requirements</h2>
+            <div class="game-about prose-steam text-slate-300 text-sm" [innerHTML]="minimum"></div>
+          </div>
+        }
+        @if (safeRecommendedReqs(); as recommended) {
+          <div class="rounded-2xl bg-steam-card/80 border border-white/5 p-5">
+            <h2 class="text-lg font-semibold text-white mb-3">Recommended requirements</h2>
+            <div class="game-about prose-steam text-slate-300 text-sm" [innerHTML]="recommended"></div>
+          </div>
+        }
+      </section>
+    }
+  </div>
+}
