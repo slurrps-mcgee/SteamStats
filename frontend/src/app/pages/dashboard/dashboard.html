@@ -7,7 +7,9 @@
   @if (session.profileLoading()) {
     <app-loading-spinner label="Loading Steam profile..." />
   } @else if (session.error(); as message) {
-    <div class="rounded-2xl bg-steam-card/60 border border-dashed border-red-500/30 p-10 text-center text-red-300">
+    <div
+      class="rounded-2xl bg-steam-card/60 border border-dashed border-red-500/30 p-10 text-center text-red-300"
+    >
       {{ message }}
     </div>
   } @else if (session.profile(); as profile) {
@@ -26,14 +28,19 @@
       <app-stat-card
         label="Total Hours Played"
         icon="schedule"
-        [value]="(session.library()?.stats?.totalPlaytimeMinutes | playtime) ?? '-'"
+        [value]="(session.library()?.stats?.totalPlaytimeMinutes | playtime) || '-'"
       />
       <app-stat-card
         label="Recently Played"
         icon="history"
         [value]="session.library()?.stats?.recentlyPlayedCount ?? 0"
       />
-      <app-stat-card label="Achievement Completion" icon="emoji_events" value="Coming soon" subtitle="Future feature" />
+      <app-stat-card
+        label="Achievement Completion"
+        icon="emoji_events"
+        value="Coming soon"
+        subtitle="Future feature"
+      />
     </div>
 
     <!-- Recently played -->
@@ -58,11 +65,15 @@
     <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold text-white">Feeling lucky?</h2>
-        <a routerLink="/random" class="text-sm text-steam-primary hover:underline">Pick a random game</a>
+        <a routerLink="/random" class="text-sm text-steam-primary hover:underline"
+          >Pick a random game</a
+        >
       </div>
     </div>
   } @else {
-    <div class="rounded-2xl bg-steam-card/60 border border-dashed border-white/10 p-10 text-center text-slate-400">
+    <div
+      class="rounded-2xl bg-steam-card/60 border border-dashed border-white/10 p-10 text-center text-slate-400"
+    >
       Enter a SteamID64 or profile URL above to get started.
     </div>
   }

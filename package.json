@@ -16,5 +16,8 @@
     "build:frontend": "npm run build:shared && npm run build --workspace=frontend"
   },
   "dependencies": {
+  },
+  "overrides": {
+    "typescript": "~6.0.3"
   }
 }

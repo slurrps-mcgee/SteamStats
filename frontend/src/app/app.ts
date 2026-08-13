@@ -23,7 +23,6 @@ interface NavItem {
   path: string;
 }
 
-
 const NAV_ITEMS: NavItem[] = [
   {
     label: 'Dashboard',
@@ -67,55 +66,36 @@ const NAV_ITEMS: NavItem[] = [
     MatTooltipModule,
   ],
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './app.css',
 })
-export class App {
+export class App implements OnDestroy {
   @ViewChild('snav')
   protected sidenav!: MatSidenav;
 
-
   private readonly media = inject(MediaMatcher);
 
-
-  private readonly mobileQuery =
-    this.media.matchMedia('(max-width: 768px)');
-
+  private readonly mobileQuery = this.media.matchMedia('(max-width: 768px)');
 
   protected readonly navItems = NAV_ITEMS;
-
 
   /**
    * Desktop starts collapsed.
    */
   protected readonly expanded = signal(false);
 
+  protected readonly isMobile = signal(this.mobileQuery.matches);
 
-  protected readonly isMobile =
-    signal(this.mobileQuery.matches);
+  private readonly mobileListener = (event: MediaQueryListEvent) => {
+    this.isMobile.set(event.matches);
 
-
-
-  private readonly mobileListener =
-    (event: MediaQueryListEvent) => {
-
-      this.isMobile.set(event.matches);
-
-
-      if (event.matches) {
-        this.expanded.set(false);
-      }
-
-    };
-
-
+    if (event.matches) {
+      this.expanded.set(false);
+    }
+  };
 
   constructor() {
-
-    this.mobileQuery.addEventListener(
-      'change',
-      this.mobileListener
-    );
-
+    this.mobileQuery.addEventListener('change', this.mobileListener);
   }
 
   toggleNav(): void {
@@ -124,9 +104,7 @@ export class App {
       return;
     }
 
-    this.expanded.update(
-      value => !value
-    );
+    this.expanded.update((value) => !value);
   }
 
   closeMobile(): void {
@@ -136,9 +114,6 @@ export class App {
   }
 
   ngOnDestroy(): void {
-    this.mobileQuery.removeEventListener(
-      'change',
-      this.mobileListener
-    );
+    this.mobileQuery.removeEventListener('change', this.mobileListener);
   }
 }
