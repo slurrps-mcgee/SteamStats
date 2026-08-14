@@ -127,6 +127,7 @@ Responsibilities:
 │   (@steamstats/shared)
 │
 ├── docker-compose.yml
+├── docker-compose.prod.example.yml
 ├── .env.example
 ├── package.json
 └── README.md
@@ -344,12 +345,34 @@ This means:
 
 SteamStats can run completely containerized.
 
-Build and start:
+Copy env first:
 
 ```bash
 cp .env.example .env
+```
 
+## Local development (live reload)
+
+`docker-compose.yml` bind-mounts the repo and runs `ng serve` plus `tsx watch`. Source edits show up without rebuilding the image.
+
+```bash
 docker compose up --build
+```
+
+The application becomes available at:
+
+```text
+http://localhost:4200
+```
+
+The backend is also published at `http://localhost:3000` for local debugging. The Angular proxy (`frontend/proxy.conf.json`) forwards `/api` to the `backend` service.
+
+## Production-like (nginx)
+
+Use the example compose file to build the multi-stage production images. nginx serves the SPA on port 8080 and reverse-proxies `/api` to the backend container (backend is not published to the host).
+
+```bash
+docker compose -f docker-compose.prod.example.yml up --build -d
 ```
 
 The application becomes available at:

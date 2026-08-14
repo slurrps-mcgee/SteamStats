@@ -2,9 +2,9 @@ name: Build and Deploy
 
 on:
   workflow_dispatch: # Allow manual trigger
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
 
 jobs:
   build-and-deploy:

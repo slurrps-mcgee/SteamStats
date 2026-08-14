@@ -1,30 +1,53 @@
+# Local development only. Production images: docker-compose.prod.example.yml
+
 services:
   backend:
     build:
       context: .
-      dockerfile: backend/dockerfile
+      dockerfile: backend/dockerfile.dev
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    entrypoint: ["/bin/sh", "/app/scripts/docker-entrypoint.dev.sh"]
+    command: ["npm", "run", "dev", "--workspace=backend"]
+    ports:
+      - "3000:3000"
     env_file:
       - ./.env
-    expose:
-      - "3000"
-    # Intentionally no `ports:` mapping - the backend must only be reachable
-    # from other containers on `steamstats-net` (via the frontend's nginx
-    # reverse proxy), never directly from the host or the public internet.
     networks:
       - steamstats-net
-    restart: unless-stopped
 
   frontend:
     build:
       context: .
-      dockerfile: frontend/dockerfile
+      dockerfile: frontend/dockerfile.dev
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/frontend/.angular
+    entrypoint: ["/bin/sh", "/app/scripts/docker-entrypoint.dev.sh"]
+    command:
+      - npm
+      - run
+      - start
+      - --workspace=frontend
+      - --
+      - --host
+      - "0.0.0.0"
+      - --poll
+      - "1000"
+      - --proxy-config
+      - proxy.conf.json
     ports:
-      - "8080:80"
+      - "4200:4200"
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
     depends_on:
       - backend
     networks:
       - steamstats-net
-    restart: unless-stopped
 
 networks:
   steamstats-net:

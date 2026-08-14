@@ -26,5 +26,13 @@ export const routes: Routes = [
     path: 'game-details/:id',
     loadComponent: () => import('./pages/gamedetails/game-details').then((m) => m.GameDetails),
   },
+  {
+    path: 'privacy',
+    loadComponent: () => import('./pages/privacy/privacy').then((m) => m.Privacy),
+  },
+  {
+    path: 'terms',
+    loadComponent: () => import('./pages/terms/terms').then((m) => m.Terms),
+  },
   { path: '**', redirectTo: 'dashboard' },
 ];

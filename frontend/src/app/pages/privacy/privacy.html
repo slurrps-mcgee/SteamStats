@@ -1,0 +1,121 @@
+<div class="h-full overflow-auto">
+  <div class="mx-auto max-w-3xl py-2 md:py-4">
+    <p class="text-xs font-medium uppercase tracking-[0.2em] text-steam-primary">Legal</p>
+    <h1 class="mt-3 text-3xl font-semibold text-white">Privacy Policy</h1>
+    <p class="mt-3 text-sm text-slate-400">Last updated: August 13, 2026</p>
+
+    <article class="mt-8 space-y-6 rounded-2xl border border-white/5 bg-steam-card/80 p-5 text-sm leading-relaxed text-slate-300 shadow-lg sm:p-8">
+      <section>
+        <h2 class="text-lg font-semibold text-white">Overview</h2>
+        <p class="mt-2">
+          Steam Stats (“we”, “us”, or “our”) is an open-source Steam companion dashboard for exploring public Steam
+          profile and library data. This Privacy Policy explains what information is handled when you use Steam Stats.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-white">Information we handle</h2>
+        <ul class="mt-2 list-disc space-y-2 pl-5">
+          <li>
+            <span class="font-medium text-slate-100">Steam identifiers you provide.</span>
+            When you search, you may enter a SteamID64, profile URL, or vanity name. That input is sent to our backend
+            so we can resolve and load Steam profile and library data.
+          </li>
+          <li>
+            <span class="font-medium text-slate-100">Steam profile and library data.</span>
+            Public Steam information returned by the Steam Web API / Store APIs (such as persona name, avatar,
+            owned games, and playtime) is fetched by our backend and shown in the app.
+          </li>
+          <li>
+            <span class="font-medium text-slate-100">Local session preference.</span>
+            The browser may store the last resolved Steam ID in
+            <code class="rounded bg-white/5 px-1 text-slate-200">localStorage</code>
+            so your session can be restored after a refresh. This value stays on your device unless you clear it in
+            Settings or clear site data.
+          </li>
+          <li>
+            <span class="font-medium text-slate-100">Optional local caches.</span>
+            The app may cache some game store details in browser storage for a short period to improve performance.
+          </li>
+          <li>
+            <span class="font-medium text-slate-100">Technical logs.</span>
+            The host running a Steam Stats instance may keep standard server logs (for example timestamps and request
+            metadata) for security and reliability.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-white">Accounts</h2>
+        <p class="mt-2">
+          Steam Stats does not currently offer user accounts or Steam OpenID sign-in. Looking up a profile does not
+          create an account with us.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-white">How information is used</h2>
+        <ul class="mt-2 list-disc space-y-2 pl-5">
+          <li>To resolve Steam identifiers and display profile, library, statistics, and related dashboard features.</li>
+          <li>To keep a local session so you do not have to re-enter a Steam ID after refreshing.</li>
+          <li>To operate, secure, and improve the service (including rate limiting and diagnosing errors).</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-white">Steam API and third parties</h2>
+        <p class="mt-2">
+          Steam data is retrieved through our backend using Steam’s APIs. Steam’s handling of data is governed by
+          Valve / Steam policies. Steam Stats is not affiliated with Valve Corporation. We do not sell personal data.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-white">Data retention and deletion</h2>
+        <p class="mt-2">
+          Server-side responses may be cached briefly for performance. You can clear the active Steam profile from
+          Settings, which removes the stored Steam ID from your browser. Clearing browser site data removes local
+          caches as well.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-white">Self-hosted deployments</h2>
+        <p class="mt-2">
+          Steam Stats is open source and may be hosted by third parties. If you use a self-hosted or third-party
+          instance, that operator is responsible for how data is stored, secured, and processed on their infrastructure.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-white">Changes</h2>
+        <p class="mt-2">
+          We may update this Privacy Policy from time to time. The “Last updated” date will change when we do.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-white">Contact</h2>
+        <p class="mt-2">
+          Questions about this policy can be raised via the
+          <a
+            class="text-steam-primary underline decoration-steam-primary/40 underline-offset-2 hover:text-sky-300"
+            href="https://github.com/slurrps-mcgee/SteamStats"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Steam Stats GitHub repository</a
+          >.
+        </p>
+      </section>
+    </article>
+
+    <p class="mt-8 text-sm text-slate-400">
+      See also
+      <a
+        routerLink="/terms"
+        class="text-steam-primary underline decoration-steam-primary/40 underline-offset-2 hover:text-sky-300"
+        >Terms</a
+      >.
+    </p>
+  </div>
+</div>

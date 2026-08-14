@@ -1,39 +1,39 @@
 .layout {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: #0b0e14;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #0b0e14;
 }
 
 .toolbar {
-    background: transparent;
-    color: white;
-    z-index: 10;
+  flex-shrink: 0;
+  background: transparent;
+  color: white;
+  z-index: 10;
 }
 
 .title {
-    text-align: center;
-    font-weight: 600;
-    font-size: 2rem;
-    width: 100%;
+  text-align: center;
+  font-weight: 600;
+  font-size: 2rem;
+  width: 100%;
 }
 
 .container {
-    flex: 1;
+  flex: 1;
+  min-height: 0;
 }
 
 .sidenav {
-    background:#171a21;
-    border-right:
-        1px solid rgba(255, 255, 255, .05);
-    overflow-x: hidden;
-    transition:
-        width 300ms cubic-bezier(.4, 0, .2, 1);
+  background: #171a21;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  overflow-x: hidden;
+  transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Collapsed sidebar */
-.sidenav[style*="width: 72px"] {
-
+.sidenav[style*='width: 72px'] {
   .nav-item {
     justify-content: center;
     padding: 0;
@@ -46,75 +46,48 @@
   .label {
     display: none;
   }
-
 }
 
+/* Layout width/centering lives in styles.css so Material cannot override it. */
 .content {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    background: #0b0e14;
-    transition: margin-left 300ms cubic-bezier(.4, 0, .2, 1);
-}
-
-.page {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 1400px;
-    margin-inline: 0;
-    padding: 16px;
-}
-
-@media (min-width: 768px) {
-    .page {
-        padding: 24px 32px;
-    }
-}
-
-@media (min-width: 1200px) {
-    .page {
-        padding: 32px 48px;
-    }
+  background: #0b0e14;
+  transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-item {
-    margin: 4px auto;
-    border-radius: 12px;
-    color: #c7d5e0;
-    transition:
-        background-color .2s ease,
-        color .2s ease;
+  margin: 4px auto;
+  border-radius: 12px;
+  color: #c7d5e0;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .nav-item:hover {
-    background:
-        rgba(255, 255, 255, .05);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .active-link {
-    background:
-        rgba(102, 192, 244, .15);
-    color:#66c0f4;
+  background: rgba(102, 192, 244, 0.15);
+  color: #66c0f4;
 }
 
 mat-icon {
-    transition:
-        transform .3s ease;
+  transition: transform 0.3s ease;
 }
 
 .label {
-    display:inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    width:120px;
-    opacity: 1;
-    transition:
-        width 250ms ease,
-        opacity 200ms ease;
-
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 120px;
+  opacity: 1;
+  transition:
+    width 250ms ease,
+    opacity 200ms ease;
 }
 
 .label.collapsed {
-    width: 0;
-    opacity: 0;
+  width: 0;
+  opacity: 0;
 }
