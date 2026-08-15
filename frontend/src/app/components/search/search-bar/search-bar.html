@@ -1,6 +1,7 @@
 <form class="flex w-full items-stretch gap-3" (submit)="onSubmit($event)">
   <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
-    <mat-icon matPrefix class="mr-1 text-slate-400">search</mat-icon>
+    <mat-label>Search Steam profile</mat-label>
+    <mat-icon matPrefix class="mr-1 text-slate-400" aria-hidden="true">search</mat-icon>
     <input
       matInput
       [formControl]="control"

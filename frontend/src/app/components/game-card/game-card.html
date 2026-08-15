@@ -8,7 +8,7 @@
         [src]="headerSrc()"
         [alt]="game().name"
         loading="lazy"
-        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         (error)="onImageError($event)"
       />
     }

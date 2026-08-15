@@ -9,9 +9,10 @@
       [href]="profile().profileUrl"
       target="_blank"
       rel="noopener noreferrer"
-      class="text-lg font-semibold text-white transition-colors hover:text-steam-primary"
+      class="text-lg font-semibold text-white transition-colors hover:text-steam-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-steam-primary/60"
     >
       {{ profile().personaName }}
+      <span class="sr-only">(opens in a new tab)</span>
     </a>
     <div class="flex items-center gap-2 text-sm text-slate-400">
       <span class="inline-block h-2 w-2 rounded-full" [class]="statusDotClass()"></span>

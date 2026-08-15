@@ -1,7 +1,7 @@
 {
   "name": "SteamStats",
   "short_name": "SteamStats",
-  "description": "A Steam companion dashboard for your game library and playtime stats.",
+  "description": "Steam companion dashboard for public Steam profiles, game libraries, and playtime stats.",
   "theme_color": "#171a21",
   "background_color": "#171a21",
   "display": "standalone",

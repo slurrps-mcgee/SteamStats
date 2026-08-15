@@ -39,6 +39,7 @@ frontend/
 │       ├── pages/
 │       ├── services/            # SteamSessionService, GameDetailsStore
 │       ├── interceptors/
+│       ├── seo/                 # TitleStrategy + Meta/canonical
 │       └── utils/
 ├── proxy.conf.json
 ├── proxy.conf.dev.json
@@ -65,6 +66,16 @@ Shared surfaces: `ss-panel`, `ss-panel-muted`, `ss-panel-error`, `ss-link` in `s
 | `/privacy`, `/terms` | Legal |
 
 Unknown paths redirect to dashboard.
+
+---
+
+## Accessibility and SEO
+
+The SPA targets [WCAG 2.2](https://www.w3.org/WAI/standards-guidelines/wcag/) **Level AA**: skip link to `#main-content`, landmarks (`header` / `main` / footer `nav`), labeled search and filter fields, page `h1`s, live regions on loading and errors, and `prefers-reduced-motion`.
+
+SEO stays **client-side**. `index.html` has default description, robots, Open Graph, Twitter, JSON-LD, and a web app manifest. Per-route titles and descriptions are applied by `SteamStatsTitleStrategy` from `title` / `data.description` on [`app.routes.ts`](src/app/app.routes.ts). Game details set `SteamStats — {{ name }}` after the store loads. There is no Angular Universal / prerender in this pass, so crawlers that do not run JavaScript still see the thin `index.html` shell.
+
+[`src/robots.txt`](src/robots.txt) and [`src/sitemap.xml`](src/sitemap.xml) are copied into the build. Before a public deploy, replace the `https://example.com` origin in both files with your real host.
 
 ---
 

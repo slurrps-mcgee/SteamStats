@@ -1,4 +1,6 @@
 <div class="flex max-w-lg flex-col gap-6">
+  <h1 class="text-2xl font-semibold text-white">Settings</h1>
+
   <div class="ss-panel">
     <h2 class="mb-2 text-lg font-semibold text-white">Active Profile</h2>
     @if (session.hasActiveProfile()) {
@@ -6,11 +8,11 @@
         Currently viewing SteamID <span class="text-steam-primary">{{ session.steamId() }}</span>
       </p>
       <button mat-stroked-button color="warn" (click)="clearSession()">
-        <mat-icon class="mr-1">logout</mat-icon>
+        <mat-icon class="mr-1" aria-hidden="true">logout</mat-icon>
         Clear profile
       </button>
     } @else {
-      <p class="text-sm text-slate-500">No profile is currently active.</p>
+      <p class="text-sm text-slate-400">No profile is currently active.</p>
     }
   </div>
 

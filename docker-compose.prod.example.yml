@@ -13,6 +13,18 @@ services:
     # Intentionally no `ports:` mapping - the backend must only be reachable
     # from other containers on `steamstats-net` (via the frontend's nginx
     # reverse proxy), never directly from the host or the public internet.
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     networks:
       - steamstats-net
     restart: unless-stopped
@@ -24,7 +36,8 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - steamstats-net
     restart: unless-stopped

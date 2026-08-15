@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { GameDetailsStore } from '../../services/game-details.store';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
+import { PageMeta } from '../../seo/page-meta';
 
 const ABOUT_READ_MORE_THRESHOLD = 600;
 
@@ -27,6 +28,7 @@ const ABOUT_READ_MORE_THRESHOLD = 600;
 export class GameDetails {
   private readonly route = inject(ActivatedRoute);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly pageMeta = inject(PageMeta);
   protected readonly store = inject(GameDetailsStore);
 
   private readonly appId = toSignal(
@@ -84,6 +86,16 @@ export class GameDetails {
       const screenshots = this.store.active()?.screenshots ?? [];
       if (screenshots.length > 0 && !this.selectedScreenshot()) {
         this.selectedScreenshot.set(screenshots[0].full);
+      }
+    });
+
+    effect(() => {
+      const details = this.store.active();
+      if (details) {
+        this.pageMeta.set({
+          title: details.name,
+          description: `${details.name} on Steam Stats — store details, screenshots, and playtime context.`,
+        });
       }
     });
   }

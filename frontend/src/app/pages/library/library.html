@@ -1,4 +1,6 @@
 <div class="flex flex-col gap-6">
+  <h1 class="text-2xl font-semibold text-white">Library</h1>
+
   @if (!session.hasActiveProfile()) {
     <div class="ss-panel-muted">
       Search for a Steam profile on the Dashboard first.
@@ -6,14 +8,16 @@
   } @else {
     <div class="ss-panel flex flex-col gap-4 sm:flex-row">
       <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
-        <mat-icon matPrefix class="mr-1 text-slate-400">search</mat-icon>
+        <mat-label>Filter games by name</mat-label>
+        <mat-icon matPrefix class="mr-1 text-slate-400" aria-hidden="true">search</mat-icon>
         <input matInput [formControl]="filterControl" placeholder="Filter by name" />
       </mat-form-field>
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Sort library</mat-label>
         <mat-select [formControl]="sortControl">
-          <mat-option value="playtime">Sort: Most played</mat-option>
-          <mat-option value="recent">Sort: Recently played</mat-option>
-          <mat-option value="name">Sort: Name (A-Z)</mat-option>
+          <mat-option value="playtime">Most played</mat-option>
+          <mat-option value="recent">Recently played</mat-option>
+          <mat-option value="name">Name (A-Z)</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
@@ -27,7 +31,7 @@
         }
       </div>
     } @else {
-      <p class="py-10 text-center text-sm text-slate-500">No games match your filter.</p>
+      <p class="py-10 text-center text-sm text-slate-400">No games match your filter.</p>
     }
   }
 </div>

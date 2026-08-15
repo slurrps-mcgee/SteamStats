@@ -22,7 +22,7 @@
   }
 
   .ss-link {
-    @apply text-steam-primary hover:underline;
+    @apply text-steam-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-steam-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-steam-shell;
   }
 }
 
@@ -63,4 +63,32 @@ mat-sidenav-content.content > app-footer {
   align-self: stretch;
   width: 100%;
   box-sizing: border-box;
+}
+
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  z-index: 100;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: #66c0f4;
+  color: #0b0e14;
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

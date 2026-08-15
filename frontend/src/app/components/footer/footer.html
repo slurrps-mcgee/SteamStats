@@ -7,8 +7,12 @@
       <nav class="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 text-[0.8125rem]" aria-label="Legal and project links">
         <a class="ss-link" routerLink="/privacy">Privacy Policy</a>
         <a class="ss-link" routerLink="/terms">Terms</a>
-        <a class="ss-link" [href]="licenseUrl" target="_blank" rel="noopener noreferrer">License</a>
-        <a class="ss-link" [href]="githubUrl" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a class="ss-link" [href]="licenseUrl" target="_blank" rel="noopener noreferrer">
+          License <span class="sr-only">(opens in a new tab)</span>
+        </a>
+        <a class="ss-link" [href]="githubUrl" target="_blank" rel="noopener noreferrer">
+          GitHub <span class="sr-only">(opens in a new tab)</span>
+        </a>
       </nav>
     </div>
   </div>

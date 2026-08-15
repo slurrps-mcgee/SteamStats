@@ -1,6 +1,7 @@
 /* Collapsed rail + Material nav item styles that utilities cannot express. */
 
 .sidenav[style*='width: 72px'] {
+  border-radius: 0px;
   .nav-item {
     justify-content: center;
     padding: 0;
@@ -22,6 +23,11 @@
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
+}
+
+.nav-item:focus-visible {
+  outline: 2px solid #66c0f4;
+  outline-offset: 2px;
 }
 
 .nav-item:hover {

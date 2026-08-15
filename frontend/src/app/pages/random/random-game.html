@@ -1,4 +1,6 @@
 <div class="mx-auto flex max-w-lg flex-col items-center gap-6">
+  <h1 class="w-full text-2xl font-semibold text-white">Random Game</h1>
+
   @if (!session.hasActiveProfile()) {
     <div class="ss-panel-muted w-full">
       Search for a Steam profile on the Dashboard first.
@@ -21,7 +23,7 @@
       </div>
     </div>
     <button mat-flat-button color="primary" class="!h-12 !px-8" (click)="randomize()">
-      <mat-icon class="mr-1">casino</mat-icon>
+      <mat-icon class="mr-1" aria-hidden="true">casino</mat-icon>
       Randomize
     </button>
   } @else {

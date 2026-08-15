@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Replace https://example.com with your public origin when you deploy. See frontend/README.md. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://example.com/dashboard</loc>
+  </url>
+  <url>
+    <loc>https://example.com/library</loc>
+  </url>
+  <url>
+    <loc>https://example.com/random</loc>
+  </url>
+  <url>
+    <loc>https://example.com/statistics</loc>
+  </url>
+  <url>
+    <loc>https://example.com/settings</loc>
+  </url>
+  <url>
+    <loc>https://example.com/privacy</loc>
+  </url>
+  <url>
+    <loc>https://example.com/terms</loc>
+  </url>
+</urlset>

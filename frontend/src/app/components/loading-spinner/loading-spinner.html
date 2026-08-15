@@ -1,6 +1,4 @@
-<div class="flex flex-col items-center justify-center gap-3 py-12 text-slate-400">
-  <mat-spinner [diameter]="diameter()" color="primary" />
-  @if (label()) {
-    <span class="text-sm">{{ label() }}</span>
-  }
+<div class="flex flex-col items-center justify-center gap-3 py-12 text-slate-400" role="status" aria-live="polite">
+  <mat-spinner [diameter]="diameter()" color="primary" aria-hidden="true" />
+  <span class="text-sm">{{ label() || 'Loading' }}</span>
 </div>

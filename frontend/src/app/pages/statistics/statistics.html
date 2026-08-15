@@ -1,4 +1,6 @@
 <div class="flex flex-col gap-6">
+  <h1 class="text-2xl font-semibold text-white">Statistics</h1>
+
   @if (!session.hasActiveProfile()) {
     <div class="ss-panel-muted">
       Search for a Steam profile on the Dashboard first.
@@ -21,7 +23,7 @@
           }
         </div>
       } @else {
-        <p class="text-sm text-slate-500">No playtime data available.</p>
+        <p class="text-sm text-slate-400">No playtime data available.</p>
       }
     </div>
 

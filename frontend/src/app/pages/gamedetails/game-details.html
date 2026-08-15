@@ -1,7 +1,7 @@
 @if (store.loading()) {
   <app-loading-spinner label="Loading game details..." />
 } @else if (store.error(); as message) {
-  <div class="ss-panel-error">
+  <div class="ss-panel-error" role="alert">
     <p class="mb-4">{{ message }}</p>
     <a routerLink="/library" mat-stroked-button color="primary">Back to library</a>
   </div>
@@ -46,7 +46,7 @@
         <div class="flex flex-wrap items-center gap-4">
           @for (platform of platformLabels(); track platform.label) {
             <span class="inline-flex items-center gap-1 text-slate-300 text-sm">
-              <mat-icon class="!text-base !w-4 !h-4 text-steam-primary">{{ platform.icon }}</mat-icon>
+              <mat-icon class="!text-base !w-4 !h-4 text-steam-primary" aria-hidden="true">{{ platform.icon }}</mat-icon>
               {{ platform.label }}
             </span>
           }
@@ -59,6 +59,7 @@
               class="inline-flex items-center gap-2 rounded-md bg-yellow-500/15 text-yellow-200 px-2 py-1 text-sm hover:bg-yellow-500/25"
             >
               Metacritic {{ metacritic.score }}
+              <span class="sr-only">(opens in a new tab)</span>
             </a>
           }
         </div>
@@ -72,6 +73,7 @@
             rel="noopener noreferrer"
           >
             View on Steam
+            <span class="sr-only">(opens in a new tab)</span>
           </a>
           @if (details.website) {
             <a
@@ -82,6 +84,7 @@
               rel="noopener noreferrer"
             >
               Official site
+              <span class="sr-only">(opens in a new tab)</span>
             </a>
           }
         </div>
@@ -97,19 +100,19 @@
     <!-- Meta grid -->
     <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <div class="ss-panel">
-        <div class="mb-1 text-xs uppercase tracking-wide text-slate-500">Developers</div>
+        <div class="mb-1 text-xs uppercase tracking-wide text-slate-400">Developers</div>
         <div class="text-sm text-white">{{ details.developers.join(', ') || '—' }}</div>
       </div>
       <div class="ss-panel">
-        <div class="mb-1 text-xs uppercase tracking-wide text-slate-500">Publishers</div>
+        <div class="mb-1 text-xs uppercase tracking-wide text-slate-400">Publishers</div>
         <div class="text-sm text-white">{{ details.publishers.join(', ') || '—' }}</div>
       </div>
       <div class="ss-panel">
-        <div class="mb-1 text-xs uppercase tracking-wide text-slate-500">App ID</div>
+        <div class="mb-1 text-xs uppercase tracking-wide text-slate-400">App ID</div>
         <div class="text-sm text-white">{{ details.appId }}</div>
       </div>
       <div class="ss-panel">
-        <div class="mb-1 text-xs uppercase tracking-wide text-slate-500">Achievements</div>
+        <div class="mb-1 text-xs uppercase tracking-wide text-slate-400">Achievements</div>
         <div class="text-sm text-white">{{ details.achievements?.total ?? '—' }}</div>
       </div>
     </section>
@@ -131,9 +134,11 @@
           @for (shot of details.screenshots; track shot.id) {
             <button
               type="button"
-              class="shrink-0 rounded-lg overflow-hidden border transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-steam-primary/60"
+              class="shrink-0 min-h-6 min-w-6 rounded-lg overflow-hidden border transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-steam-primary/60"
               [class.border-steam-primary]="selectedScreenshot() === shot.full"
               [class.border-white/10]="selectedScreenshot() !== shot.full"
+              [attr.aria-label]="'Show screenshot ' + shot.id"
+              [attr.aria-pressed]="selectedScreenshot() === shot.full"
               (click)="selectScreenshot(shot.full)"
             >
               <img

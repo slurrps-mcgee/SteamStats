@@ -3,6 +3,7 @@ import {
   Component,
   OnDestroy,
   ViewChild,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -88,6 +89,22 @@ export class App implements OnDestroy {
 
   protected readonly isMobile = signal(this.mobileQuery.matches);
 
+  protected readonly sidenavOpen = signal(!this.mobileQuery.matches);
+
+  protected readonly navRailCollapsed = computed(() => !this.expanded() && !this.isMobile());
+
+  protected readonly menuExpanded = computed(() =>
+    this.isMobile() ? this.sidenavOpen() : this.expanded(),
+  );
+
+  protected readonly menuButtonLabel = computed(() => {
+    if (this.isMobile()) {
+      return this.sidenavOpen() ? 'Close navigation' : 'Open navigation';
+    }
+
+    return this.expanded() ? 'Collapse navigation' : 'Expand navigation';
+  });
+
   private readonly mobileListener = (event: MediaQueryListEvent) => {
     this.isMobile.set(event.matches);
 
@@ -113,6 +130,10 @@ export class App implements OnDestroy {
     if (this.isMobile()) {
       this.sidenav.close();
     }
+  }
+
+  onSidenavOpenedChange(opened: boolean): void {
+    this.sidenavOpen.set(opened);
   }
 
   ngOnDestroy(): void {

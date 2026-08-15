@@ -1,17 +1,30 @@
 <div class="flex h-screen flex-col overflow-hidden bg-steam-shell">
-  <mat-toolbar class="z-10 shrink-0 bg-transparent text-white">
-    <button mat-icon-button (click)="toggleNav()">
-      <mat-icon>menu</mat-icon>
-    </button>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
-    <span class="w-full text-center text-2xl font-semibold">Steam Stats</span>
-  </mat-toolbar>
+  <header>
+    <mat-toolbar class="z-10 shrink-0 bg-transparent text-white">
+      <button
+        mat-icon-button
+        type="button"
+        (click)="toggleNav()"
+        [attr.aria-label]="menuButtonLabel()"
+        [attr.aria-expanded]="menuExpanded()"
+        aria-controls="app-sidenav"
+      >
+        <mat-icon aria-hidden="true">menu</mat-icon>
+      </button>
+
+      <span class="w-full text-center text-2xl font-semibold">Steam Stats</span>
+    </mat-toolbar>
+  </header>
 
   <mat-sidenav-container class="flex-1">
     <mat-sidenav
       #snav
+      id="app-sidenav"
       [mode]="isMobile() ? 'over' : 'side'"
       [opened]="!isMobile()"
+      (openedChange)="onSidenavOpenedChange($event)"
       class="sidenav overflow-x-hidden rounded-none bg-steam-bg transition-[width] duration-300 ease-in-out"
       [style.width.px]="isMobile() ? 260 : expanded() ? 240 : 72"
     >
@@ -21,17 +34,18 @@
             mat-list-item
             [routerLink]="item.path"
             routerLinkActive="active-link"
-            [matTooltip]="!expanded() && !isMobile() ? item.label : ''"
+            [matTooltip]="navRailCollapsed() ? item.label : ''"
             matTooltipPosition="right"
+            [attr.aria-label]="item.label"
             (click)="closeMobile()"
             class="nav-item"
           >
-            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            <mat-icon matListItemIcon aria-hidden="true">{{ item.icon }}</mat-icon>
 
             <span
               matListItemTitle
               class="label"
-              [class.collapsed]="!expanded() && !isMobile()"
+              [class.collapsed]="navRailCollapsed()"
             >
               {{ item.label }}
             </span>
@@ -44,7 +58,7 @@
       class="content"
       [style.margin-left.px]="isMobile() ? 0 : expanded() ? 240 : 72"
     >
-      <main class="page">
+      <main id="main-content" class="page" tabindex="-1">
         <div class="page-inner mx-auto w-full max-w-[1400px] p-4 md:px-8 md:py-6 xl:px-12 xl:py-8">
           <router-outlet />
         </div>
