@@ -5,9 +5,10 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-stat-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'block h-full' },
   template: `
     <div
-      class="rounded-2xl bg-steam-card/80 backdrop-blur-sm border border-white/5 shadow-lg p-5 flex flex-col gap-2"
+      class="h-full rounded-2xl bg-steam-card/80 backdrop-blur-sm border border-white/5 shadow-lg p-5 flex flex-col gap-2"
     >
       <div class="flex items-center gap-2 text-slate-400 text-sm">
         @if (icon()) {
@@ -15,7 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
         }
         <span>{{ label() }}</span>
       </div>
-      <div class="text-2xl font-semibold text-white">{{ value() }}</div>
+      <div class="flex-1 text-2xl font-semibold text-white">{{ value() }}</div>
       @if (subtitle()) {
         <div class="text-xs text-slate-500">{{ subtitle() }}</div>
       }

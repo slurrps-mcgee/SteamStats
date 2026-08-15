@@ -31,7 +31,7 @@ function normalizeGame(game: any): OwnedGame {
                 ? `https://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg`
                 : '',
         headerUrl:
-            `https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg`,
+            `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${game.appid}/header.jpg`,
         lastPlayedAt:
             game.rtime_last_played,
     };
@@ -57,7 +57,7 @@ export class SteamLibraryService {
         }
 
         return this.cache.remember(
-            `library:${steamId64}`,
+            `library:v2:${steamId64}`,
             1000 * 60 * 60, // 1 hour
             async () => {
 
@@ -134,7 +134,7 @@ export class SteamLibraryService {
         }
 
         return this.cache.remember(
-            `recent:${steamId64}`,
+            `recent:v2:${steamId64}`,
             1000 * 60 * 5, // 5 minutes
             async () => {
 

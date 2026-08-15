@@ -1,0 +1,145 @@
+{
+  "info": {
+    "_postman_id": "b9f4d2e1-8c5a-4d3b-ae22-steamstats-backend-v1",
+    "name": "SteamStats Backend",
+    "description": "Live Fastify /api/v1 routes. Default baseUrl is the local Docker/dev API on port 3000.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "steamId64", "value": "76561198120812636" },
+    { "key": "appId", "value": "2244210" },
+    { "key": "resolveInput", "value": "https://steamcommunity.com/id/your_vanity_name" }
+  ],
+  "item": [
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/profile/{{steamId64}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "profile", "{{steamId64}}"]
+            },
+            "description": "GET /api/v1/profile/:steamId"
+          }
+        },
+        {
+          "name": "Resolve Steam ID",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"input\": \"{{resolveInput}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/profile/resolve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "profile", "resolve"]
+            },
+            "description": "POST /api/v1/profile/resolve — SteamID64, vanity URL, or profile URL"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Library",
+      "item": [
+        {
+          "name": "Get library",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/library/{{steamId64}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "library", "{{steamId64}}"]
+            },
+            "description": "GET /api/v1/library/:steamId"
+          }
+        },
+        {
+          "name": "Get random game",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/library/{{steamId64}}/random",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "library", "{{steamId64}}", "random"]
+            },
+            "description": "GET /api/v1/library/:steamId/random"
+          }
+        },
+        {
+          "name": "Get recently played",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/library/{{steamId64}}/recent",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "library", "{{steamId64}}", "recent"]
+            },
+            "description": "GET /api/v1/library/:steamId/recent"
+          }
+        },
+        {
+          "name": "Refresh app list",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/library/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "library", "refresh"]
+            },
+            "description": "GET /api/v1/library/refresh — refetches IStoreService/GetAppList into cache"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Games",
+      "item": [
+        {
+          "name": "Get game details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/games/{{appId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "games", "{{appId}}"]
+            },
+            "description": "GET /api/v1/games/:appId — response headerImage is Store appdetails header_image"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cache",
+      "item": [
+        {
+          "name": "Clear cache",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cache/clear",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "cache", "clear"]
+            },
+            "description": "GET /api/v1/cache/clear"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "info": {
+    "_postman_id": "a8e3c1d0-7b4f-4c2a-9e11-steamstats-steam-webapi",
+    "name": "Steam Web API (SteamStats)",
+    "description": "Steam endpoints SteamStats actually calls. Set `steamApiKey` after import (same as STEAM_API_KEY).\n\nStore appdetails `data.header_image` is the hashed Fastly/Akamai header URL used on game details. GetOwnedGames does not return that hash.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "steamApiKey", "value": "your_steam_api_key_here" },
+    { "key": "steamId64", "value": "76561198120812636" },
+    { "key": "vanityName", "value": "your_vanity_name" },
+    { "key": "appId", "value": "2244210" }
+  ],
+  "item": [
+    {
+      "name": "ISteamUser",
+      "item": [
+        {
+          "name": "ResolveVanityURL",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key={{steamApiKey}}&vanityurl={{vanityName}}&format=json",
+              "protocol": "https",
+              "host": ["api", "steampowered", "com"],
+              "path": ["ISteamUser", "ResolveVanityURL", "v1", ""],
+              "query": [
+                { "key": "key", "value": "{{steamApiKey}}" },
+                { "key": "vanityurl", "value": "{{vanityName}}" },
+                { "key": "format", "value": "json" }
+              ]
+            },
+            "description": "Maps to SteamApiClient.resolveVanityUrl"
+          }
+        },
+        {
+          "name": "GetPlayerSummaries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key={{steamApiKey}}&steamids={{steamId64}}&format=json",
+              "protocol": "https",
+              "host": ["api", "steampowered", "com"],
+              "path": ["ISteamUser", "GetPlayerSummaries", "v2", ""],
+              "query": [
+                { "key": "key", "value": "{{steamApiKey}}" },
+                { "key": "steamids", "value": "{{steamId64}}" },
+                { "key": "format", "value": "json" }
+              ]
+            },
+            "description": "Maps to SteamApiClient.getPlayerSummaries"
+          }
+        }
+      ]
+    },
+    {
+      "name": "IPlayerService",
+      "item": [
+        {
+          "name": "GetOwnedGames",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={{steamApiKey}}&steamid={{steamId64}}&include_appinfo=1&include_played_free_games=1&format=json",
+              "protocol": "https",
+              "host": ["api", "steampowered", "com"],
+              "path": ["IPlayerService", "GetOwnedGames", "v1", ""],
+              "query": [
+                { "key": "key", "value": "{{steamApiKey}}" },
+                { "key": "steamid", "value": "{{steamId64}}" },
+                { "key": "include_appinfo", "value": "1" },
+                { "key": "include_played_free_games", "value": "1" },
+                { "key": "format", "value": "json" }
+              ]
+            },
+            "description": "Maps to SteamApiClient.getOwnedGames. Returns img_icon_url hashes only — not store header_image."
+          }
+        },
+        {
+          "name": "GetRecentlyPlayedGames",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/?key={{steamApiKey}}&steamid={{steamId64}}&format=json",
+              "protocol": "https",
+              "host": ["api", "steampowered", "com"],
+              "path": ["IPlayerService", "GetRecentlyPlayedGames", "v1", ""],
+              "query": [
+                { "key": "key", "value": "{{steamApiKey}}" },
+                { "key": "steamid", "value": "{{steamId64}}" },
+                { "key": "format", "value": "json" }
+              ]
+            },
+            "description": "Maps to SteamApiClient.getRecentlyPlayedGames"
+          }
+        }
+      ]
+    },
+    {
+      "name": "IStoreService",
+      "item": [
+        {
+          "name": "GetAppList",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.steampowered.com/IStoreService/GetAppList/v1/?key={{steamApiKey}}&format=json",
+              "protocol": "https",
+              "host": ["api", "steampowered", "com"],
+              "path": ["IStoreService", "GetAppList", "v1", ""],
+              "query": [
+                { "key": "key", "value": "{{steamApiKey}}" },
+                { "key": "format", "value": "json" }
+              ]
+            },
+            "description": "Maps to SteamApiClient.getAppList (used by GET /api/v1/library/refresh)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Steam Store",
+      "item": [
+        {
+          "name": "appdetails",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://store.steampowered.com/api/appdetails?appids={{appId}}",
+              "protocol": "https",
+              "host": ["store", "steampowered", "com"],
+              "path": ["api", "appdetails"],
+              "query": [{ "key": "appids", "value": "{{appId}}" }]
+            },
+            "description": "Maps to SteamStoreClient.getAppDetails. Inspect data.header_image for the hashed CDN URL, e.g. .../store_item_assets/steam/apps/{appId}/{sha1}/header.jpg?t=..."
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner
 import { GameCard } from '../../components/game-card/game-card';
 import { StatCard } from '../../components/stat-card/stat-card';
 import { PlaytimePipe } from '../../pipes/playtime.pipe';
-import { SearchBar } from '../search/search-bar/search-bar';
+import { SearchBar } from '../../components/search/search-bar/search-bar';
 import { ProfileSummary } from '../../components/profile/profile-summary/profile-summary';
 
 /**
