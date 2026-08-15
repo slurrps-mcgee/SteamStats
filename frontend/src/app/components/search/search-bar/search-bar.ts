@@ -18,27 +18,7 @@ import { MatInputModule } from '@angular/material/input';
   selector: 'app-search-bar',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule],
-  template: `
-    <form class="flex items-stretch gap-3 w-full" (submit)="onSubmit($event)">
-      <mat-form-field appearance="outline" class="flex-1 steam-search-field" subscriptSizing="dynamic">
-        <mat-icon matPrefix class="text-slate-400 mr-1">search</mat-icon>
-        <input
-          matInput
-          [formControl]="control"
-          placeholder="Enter a SteamID64 or profile URL (e.g. https://steamcommunity.com/id/example)"
-        />
-      </mat-form-field>
-      <button
-        mat-flat-button
-        color="primary"
-        type="submit"
-        class="!h-14 !px-6"
-        [disabled]="control.invalid || control.value === ''"
-      >
-        Search
-      </button>
-    </form>
-  `,
+  templateUrl: './search-bar.html',
 })
 export class SearchBar {
   readonly search = output<string>();

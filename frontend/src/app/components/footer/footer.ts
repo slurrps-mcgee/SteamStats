@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
   templateUrl: './footer.html',
-  styleUrl: './footer.scss',
+  host: { class: 'block w-full shrink-0 self-stretch' },
 })
 export class Footer {
   protected readonly licenseUrl =

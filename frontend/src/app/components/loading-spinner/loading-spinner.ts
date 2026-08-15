@@ -5,14 +5,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-loading-spinner',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="flex flex-col items-center justify-center gap-3 py-12 text-slate-400">
-      <mat-spinner [diameter]="diameter()" color="primary" />
-      @if (label()) {
-        <span class="text-sm">{{ label() }}</span>
-      }
-    </div>
-  `,
+  templateUrl: './loading-spinner.html',
   imports: [MatProgressSpinnerModule],
 })
 export class LoadingSpinner {

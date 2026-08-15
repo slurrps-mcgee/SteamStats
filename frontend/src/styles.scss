@@ -1,23 +1,29 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
 
 @theme {
+  --color-steam-shell: #0b0e14;
   --color-steam-bg: #171a21;
   --color-steam-card: #1b2838;
   --color-steam-primary: #66c0f4;
   --color-steam-accent: #2a475e;
 }
 
-html,
-body {
-  height: 100%;
-  background-color: var(--color-steam-bg);
-}
+@layer components {
+  .ss-panel {
+    @apply rounded-2xl border border-white/5 bg-steam-card/80 p-5 shadow-lg;
+  }
 
-body {
-  margin: 0;
-  color-scheme: dark;
+  .ss-panel-muted {
+    @apply rounded-2xl border border-dashed border-white/10 bg-steam-card/60 p-10 text-center text-slate-400;
+  }
+
+  .ss-panel-error {
+    @apply rounded-2xl border border-dashed border-red-500/30 bg-steam-card/60 p-10 text-center text-red-300;
+  }
+
+  .ss-link {
+    @apply text-steam-primary hover:underline;
+  }
 }
 
 /*
@@ -49,21 +55,6 @@ mat-sidenav-content.content > .page > .page-inner {
   box-sizing: border-box;
   flex: 1 0 auto;
   width: 100%;
-  max-width: 1400px;
-  margin-inline: auto;
-  padding: 16px;
-}
-
-@media (min-width: 768px) {
-  mat-sidenav-content.content > .page > .page-inner {
-    padding: 24px 32px;
-  }
-}
-
-@media (min-width: 1200px) {
-  mat-sidenav-content.content > .page > .page-inner {
-    padding: 32px 48px;
-  }
 }
 
 mat-sidenav-content.content > app-footer {

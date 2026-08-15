@@ -1,14 +1,15 @@
 import type { SteamGameDetails } from '@steamstats/shared';
-import type { SteamStoreGameData } from '../../types/steam-store.types';
+import type { SteamStoreGameData } from '../../../types/steam-store.types';
 
-import type CacheService from '../cache.service';
-import { SteamStoreClient } from '../steam-store.client';
-import { SteamStoreApiError } from '../../types/error.types';
+import type CacheService from '../../cache.service';
+import { ApiClient } from '../api.client';
+import { SteamStoreApiError } from '../../../types/error.types';
+import type { SteamGameDetailsResponse } from '../../../types/steam-store.types';
 
 
 export class SteamGameService {
     constructor(
-        private readonly steamStoreClient: SteamStoreClient,
+        private readonly client: ApiClient,
         private readonly cache: CacheService,
     ) { }
 
@@ -20,7 +21,11 @@ export class SteamGameService {
             1000 * 60 * 60 * 24 * 2, // 2 days
             async () => {
                 const response =
-                    await this.steamStoreClient.getAppDetails(appId);
+                    await this.client.request<SteamGameDetailsResponse>({
+                        host: 'store',
+                        path: '/api/appdetails',
+                        params: { appids: appId },
+                    });
 
                 const app = response[appId]?.data;
 

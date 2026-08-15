@@ -69,7 +69,7 @@ const NAV_ITEMS: NavItem[] = [
   ],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrl: './app.css',
+  styleUrl: './app.scss',
 })
 export class App implements OnDestroy {
   @ViewChild('snav')

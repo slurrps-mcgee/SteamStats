@@ -5,16 +5,20 @@ import type {
     WishlistResponse,
 } from '@steamstats/shared';
 
-import { SteamApiClient } from '../steam-api.client';
+import { ApiClient } from '../api.client';
+import type {
+    SteamOwnedGamesResponse,
+    SteamRecentlyPlayedGamesResponse,
+} from '../../../types/steam-api.types';
 
 // import {
 //     SteamAppService,
 // } from './steam-app.service';
 
-import type CacheService from '../cache.service';
-import { SteamNotFoundError } from '../../types/error.types';
+import type CacheService from '../../cache.service';
+import { SteamNotFoundError } from '../../../types/error.types';
 
-import { isSteamId64 } from '../../utils/steam-id.util';
+import { isSteamId64 } from '../../../utils/steam-id.util';
 
 
 function normalizeGame(game: any): OwnedGame {
@@ -41,7 +45,7 @@ export class SteamLibraryService {
 
 
     constructor(
-        private readonly client: SteamApiClient,
+        private readonly client: ApiClient,
         private readonly cache: CacheService,
         // private readonly apps: SteamAppService,
     ) { }
@@ -62,7 +66,15 @@ export class SteamLibraryService {
             async () => {
 
                 const result =
-                    await this.client.getOwnedGames(steamId64);
+                    await this.client.request<SteamOwnedGamesResponse>({
+                        host: 'web',
+                        path: '/IPlayerService/GetOwnedGames/v1/',
+                        params: {
+                            steamid: steamId64,
+                            include_appinfo: '1',
+                            include_played_free_games: '1',
+                        },
+                    });
 
                 const rawGames =
                     result.response.games ?? [];
@@ -139,9 +151,11 @@ export class SteamLibraryService {
             async () => {
 
                 const result =
-                    await this.client.getRecentlyPlayedGames(
-                        steamId64,
-                    );
+                    await this.client.request<SteamRecentlyPlayedGamesResponse>({
+                        host: 'web',
+                        path: '/IPlayerService/GetRecentlyPlayedGames/v1/',
+                        params: { steamid: steamId64 },
+                    });
 
                 const rawGames =
                     result.response.games ?? [];

@@ -1,8 +1,8 @@
-<div class="flex flex-col gap-6 max-w-lg">
-  <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5">
-    <h2 class="text-lg font-semibold text-white mb-2">Active Profile</h2>
+<div class="flex max-w-lg flex-col gap-6">
+  <div class="ss-panel">
+    <h2 class="mb-2 text-lg font-semibold text-white">Active Profile</h2>
     @if (session.hasActiveProfile()) {
-      <p class="text-sm text-slate-400 mb-4">
+      <p class="mb-4 text-sm text-slate-400">
         Currently viewing SteamID <span class="text-steam-primary">{{ session.steamId() }}</span>
       </p>
       <button mat-stroked-button color="warn" (click)="clearSession()">
@@ -14,7 +14,7 @@
     }
   </div>
 
-  <div class="rounded-2xl bg-steam-card/60 border border-dashed border-white/10 p-6 text-sm text-slate-400">
+  <div class="ss-panel-muted p-6 text-left text-sm">
     Steam login, favorites, wishlist, and friends settings are coming in a future update.
   </div>
 </div>

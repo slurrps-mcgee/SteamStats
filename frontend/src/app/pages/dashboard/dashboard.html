@@ -1,25 +1,20 @@
 <div class="flex flex-col gap-6">
-  <!-- Search card -->
-  <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5">
+  <div class="ss-panel">
     <app-search-bar (search)="onSearch($event)" />
   </div>
 
   @if (session.profileLoading()) {
     <app-loading-spinner label="Loading Steam profile..." />
   } @else if (session.error(); as message) {
-    <div
-      class="rounded-2xl bg-steam-card/60 border border-dashed border-red-500/30 p-10 text-center text-red-300"
-    >
+    <div class="ss-panel-error">
       {{ message }}
     </div>
   } @else if (session.profile(); as profile) {
-    <!-- Profile summary -->
-    <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5">
+    <div class="ss-panel">
       <app-profile-summary [profile]="profile" />
     </div>
 
-    <!-- Stat cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <app-stat-card
         label="Total Games"
         icon="videogame_asset"
@@ -43,16 +38,15 @@
       />
     </div>
 
-    <!-- Recently played -->
-    <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5">
-      <div class="flex items-center justify-between mb-4">
+    <div class="ss-panel">
+      <div class="mb-4 flex items-center justify-between">
         <h2 class="text-lg font-semibold text-white">Recently Played</h2>
-        <a routerLink="/library" class="text-sm text-steam-primary hover:underline">View library</a>
+        <a routerLink="/library" class="ss-link text-sm">View library</a>
       </div>
       @if (session.libraryLoading()) {
         <app-loading-spinner label="Loading library..." />
       } @else if (recentGames().length > 0) {
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           @for (game of recentGames(); track game.appId) {
             <app-game-card [game]="game" />
           }
@@ -62,18 +56,14 @@
       }
     </div>
 
-    <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5">
+    <div class="ss-panel">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold text-white">Feeling lucky?</h2>
-        <a routerLink="/random" class="text-sm text-steam-primary hover:underline"
-          >Pick a random game</a
-        >
+        <a routerLink="/random" class="ss-link text-sm">Pick a random game</a>
       </div>
     </div>
   } @else {
-    <div
-      class="rounded-2xl bg-steam-card/60 border border-dashed border-white/10 p-10 text-center text-slate-400"
-    >
+    <div class="ss-panel-muted">
       Enter a SteamID64 or profile URL above to get started.
     </div>
   }

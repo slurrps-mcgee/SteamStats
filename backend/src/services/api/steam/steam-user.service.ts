@@ -3,17 +3,16 @@ import type {
   SteamPersonaState,
 } from '@steamstats/shared';
 
-import {
-  SteamApiClient,
-} from '../steam-api.client';
+import { ApiClient } from '../api.client';
+import type { SteamPlayerSummariesResponse, SteamResolveVanityUrlResponse } from '../../../types/steam-api.types';
 
 import {
   isSteamId64,
   parseSteamInput,
-} from '../../utils/steam-id.util';
+} from '../../../utils/steam-id.util';
 
-import type CacheService from '../cache.service';
-import { SteamNotFoundError } from '../../types/error.types';
+import type CacheService from '../../cache.service';
+import { SteamNotFoundError } from '../../../types/error.types';
 
 
 function normalizePersonaState(
@@ -39,7 +38,7 @@ function normalizePersonaState(
 export class SteamUserService {
 
   constructor(
-    private readonly client: SteamApiClient,
+    private readonly client: ApiClient,
     private readonly cache: CacheService,
   ) {}
 
@@ -63,9 +62,11 @@ export class SteamUserService {
 
 
         const result =
-          await this.client.resolveVanityUrl(
-            parsed.value,
-          );
+          await this.client.request<SteamResolveVanityUrlResponse>({
+            host: 'web',
+            path: '/ISteamUser/ResolveVanityURL/v1/',
+            params: { vanityurl: parsed.value },
+          });
 
 
         if (
@@ -103,9 +104,11 @@ export class SteamUserService {
       async () => {
 
         const result =
-          await this.client.getPlayerSummaries(
-            steamId64,
-          );
+          await this.client.request<SteamPlayerSummariesResponse>({
+            host: 'web',
+            path: '/ISteamUser/GetPlayerSummaries/v2/',
+            params: { steamids: steamId64 },
+          });
 
 
         const player =

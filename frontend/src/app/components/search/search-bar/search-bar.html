@@ -1,0 +1,19 @@
+<form class="flex w-full items-stretch gap-3" (submit)="onSubmit($event)">
+  <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+    <mat-icon matPrefix class="mr-1 text-slate-400">search</mat-icon>
+    <input
+      matInput
+      [formControl]="control"
+      placeholder="Enter a SteamID64 or profile URL (e.g. https://steamcommunity.com/id/example)"
+    />
+  </mat-form-field>
+  <button
+    mat-flat-button
+    color="primary"
+    type="submit"
+    class="!h-14 !px-6"
+    [disabled]="control.invalid || control.value === ''"
+  >
+    Search
+  </button>
+</form>

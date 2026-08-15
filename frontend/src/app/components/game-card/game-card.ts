@@ -14,32 +14,7 @@ import { steamHeaderCandidates } from '../../utils/steam-artwork';
 @Component({
   selector: 'app-game-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <a
-      [routerLink]="['/game-details', game().appId]"
-      class="group block rounded-xl overflow-hidden bg-steam-card border border-white/5 shadow-md hover:shadow-xl hover:border-steam-primary/40 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-steam-primary/60"
-    >
-      <div class="aspect-[460/215] bg-steam-accent overflow-hidden">
-        @if (headerSrc()) {
-          <img
-            [src]="headerSrc()"
-            [alt]="game().name"
-            loading="lazy"
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            (error)="onImageError($event)"
-          />
-        }
-      </div>
-      <div class="p-3">
-        <div class="text-sm font-medium text-white truncate" [title]="game().name">
-          {{ game().name }}
-        </div>
-        <div class="text-xs text-steam-primary mt-1">
-          {{ game().playtimeForeverMinutes | playtime }} played
-        </div>
-      </div>
-    </a>
-  `,
+  templateUrl: './game-card.html',
   imports: [PlaytimePipe, RouterLink],
 })
 export class GameCard {

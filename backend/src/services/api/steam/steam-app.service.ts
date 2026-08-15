@@ -1,18 +1,16 @@
+import { ApiClient } from '../api.client';
 import type {
   SteamAppList,
-} from '../../types/steam-api.types';
+  SteamAppListResponse,
+} from '../../../types/steam-api.types';
 
-import {
-  SteamApiClient,
-} from '../steam-api.client';
-
-import type CacheService from '../cache.service';
+import type CacheService from '../../cache.service';
 
 
 export class SteamAppService {
 
   constructor(
-    private readonly client: SteamApiClient,
+    private readonly client: ApiClient,
     private readonly cache: CacheService,
   ) {}
 
@@ -20,7 +18,6 @@ export class SteamAppService {
   async initialize() {
     await this.getApps();
   }
-
 
   async getApps(): Promise<SteamAppList[]> {
 
@@ -30,7 +27,10 @@ export class SteamAppService {
       async () => {
 
         const result =
-          await this.client.getAppList();
+          await this.client.request<SteamAppListResponse>({
+            host: 'web',
+            path: '/IStoreService/GetAppList/v1/',
+          });
 
         return result.response.apps;
       },

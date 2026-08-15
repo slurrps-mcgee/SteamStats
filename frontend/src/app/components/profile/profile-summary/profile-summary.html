@@ -1,0 +1,25 @@
+<div class="flex items-center gap-4">
+  <img
+    [src]="profile().avatarFull"
+    [alt]="profile().personaName"
+    class="h-16 w-16 rounded-xl border-2 border-steam-primary/50 shadow-lg"
+  />
+  <div>
+    <a
+      [href]="profile().profileUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-lg font-semibold text-white transition-colors hover:text-steam-primary"
+    >
+      {{ profile().personaName }}
+    </a>
+    <div class="flex items-center gap-2 text-sm text-slate-400">
+      <span class="inline-block h-2 w-2 rounded-full" [class]="statusDotClass()"></span>
+      {{ statusLabel() }}
+    </div>
+  </div>
+  <div class="text-sm text-slate-400">
+    <p>Created On: {{ profile().createdAt | steamDate | date: 'medium' }}</p>
+    <p>Last Login: {{ profile().lastLogoffAt | steamDate | date: 'medium' }}</p>
+  </div>
+</div>

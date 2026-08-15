@@ -1,20 +1,18 @@
-<div class="layout">
-  <!-- Toolbar -->
-  <mat-toolbar class="toolbar">
+<div class="flex h-screen flex-col overflow-hidden bg-steam-shell">
+  <mat-toolbar class="z-10 shrink-0 bg-transparent text-white">
     <button mat-icon-button (click)="toggleNav()">
       <mat-icon>menu</mat-icon>
     </button>
 
-    <span class="title">Steam Stats</span>
+    <span class="w-full text-center text-2xl font-semibold">Steam Stats</span>
   </mat-toolbar>
 
-  <!-- Navigation -->
   <mat-sidenav-container class="flex-1">
     <mat-sidenav
       #snav
       [mode]="isMobile() ? 'over' : 'side'"
       [opened]="!isMobile()"
-      class="sidenav"
+      class="sidenav overflow-x-hidden rounded-none bg-steam-bg transition-[width] duration-300 ease-in-out"
       [style.width.px]="isMobile() ? 260 : expanded() ? 240 : 72"
     >
       <mat-nav-list>
@@ -42,13 +40,12 @@
       </mat-nav-list>
     </mat-sidenav>
 
-    <!-- Content -->
     <mat-sidenav-content
       class="content"
       [style.margin-left.px]="isMobile() ? 0 : expanded() ? 240 : 72"
     >
       <main class="page">
-        <div class="page-inner">
+        <div class="page-inner mx-auto w-full max-w-[1400px] p-4 md:px-8 md:py-6 xl:px-12 xl:py-8">
           <router-outlet />
         </div>
       </main>

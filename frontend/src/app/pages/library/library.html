@@ -1,12 +1,12 @@
 <div class="flex flex-col gap-6">
   @if (!session.hasActiveProfile()) {
-    <div class="rounded-2xl bg-steam-card/60 border border-dashed border-white/10 p-10 text-center text-slate-400">
+    <div class="ss-panel-muted">
       Search for a Steam profile on the Dashboard first.
     </div>
   } @else {
-    <div class="rounded-2xl bg-steam-card/80 border border-white/5 shadow-lg p-5 flex flex-col sm:flex-row gap-4">
+    <div class="ss-panel flex flex-col gap-4 sm:flex-row">
       <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
-        <mat-icon matPrefix class="text-slate-400 mr-1">search</mat-icon>
+        <mat-icon matPrefix class="mr-1 text-slate-400">search</mat-icon>
         <input matInput [formControl]="filterControl" placeholder="Filter by name" />
       </mat-form-field>
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
@@ -21,13 +21,13 @@
     @if (loading()) {
       <app-loading-spinner label="Loading library..." />
     } @else if (filteredGames().length > 0) {
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         @for (game of filteredGames(); track game.appId) {
           <app-game-card [game]="game" />
         }
       </div>
     } @else {
-      <p class="text-sm text-slate-500 text-center py-10">No games match your filter.</p>
+      <p class="py-10 text-center text-sm text-slate-500">No games match your filter.</p>
     }
   }
 </div>
