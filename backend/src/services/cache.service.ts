@@ -2,14 +2,23 @@ import { LRUCache } from 'lru-cache';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+type PersistedEntry = {
+  value: unknown;
+  expiresAt: number | null;
+};
+
+function isPersistedEntry(value: unknown): value is PersistedEntry {
+  if (typeof value !== 'object' || value === null || !('value' in value)) {
+    return false;
+  }
+  const expiresAt = (value as PersistedEntry).expiresAt;
+  return expiresAt === null || typeof expiresAt === 'number';
+}
 
 class CacheService {
-
   private readonly cache: LRUCache<string, any>;
 
-  private readonly filePath =
-    path.join(process.cwd(), 'cache.json');
-
+  private readonly filePath = path.join(process.cwd(), 'cache.json');
 
   constructor() {
     this.cache = new LRUCache<string, any>({
@@ -21,52 +30,55 @@ class CacheService {
 
   async load() {
     try {
-      const data =
-        await fs.readFile(
-          this.filePath,
-          'utf8',
-        );
+      const data = await fs.readFile(this.filePath, 'utf8');
+      const entries = JSON.parse(data) as Record<string, unknown>;
+      const now = Date.now();
+      let loaded = 0;
 
-      const entries =
-        JSON.parse(data);
+      for (const [key, raw] of Object.entries(entries)) {
+        if (!isPersistedEntry(raw)) {
+          continue;
+        }
 
-      for (const [key, value] of Object.entries(entries)) {
+        if (raw.expiresAt === null) {
+          this.cache.set(key, raw.value, { ttl: Infinity });
+          loaded += 1;
+          continue;
+        }
 
-        this.cache.set(
-          key,
-          value,
-          {
-            ttl: Infinity,
-          },
-        );
+        const remaining = raw.expiresAt - now;
+        if (remaining <= 0) {
+          continue;
+        }
+
+        this.cache.set(key, raw.value, { ttl: Math.max(1, remaining) });
+        loaded += 1;
       }
 
-      console.log(
-        `Loaded ${this.cache.size} cached entries`,
-      );
-
-    } catch (error) {
-      console.log(
-        'No cache file found, starting empty',
-      );
+      console.log(`Loaded ${loaded} cached entries`);
+    } catch {
+      console.log('No cache file found, starting empty');
     }
   }
 
   async save() {
-    const entries =
-      Object.fromEntries(
-        this.cache.entries(),
-      );
+    const entries: Record<string, PersistedEntry> = {};
+    const now = Date.now();
 
-    await fs.writeFile(
-      this.filePath,
-      JSON.stringify(entries),
-      'utf8',
-    );
+    for (const [key, value] of this.cache.entries()) {
+      const remaining = this.cache.getRemainingTTL(key);
+      if (remaining === 0) {
+        continue;
+      }
 
-    console.log(
-      `Saved ${this.cache.size} cached entries`,
-    );
+      entries[key] = {
+        value,
+        expiresAt: remaining === Infinity ? null : now + remaining,
+      };
+    }
+
+    await fs.writeFile(this.filePath, JSON.stringify(entries), 'utf8');
+    console.log(`Saved ${Object.keys(entries).length} cached entries`);
   }
 
   async remember<T>(
@@ -74,70 +86,43 @@ class CacheService {
     ttl: number | undefined,
     loader: () => Promise<T>,
   ): Promise<T> {
-
-    const cached =
-      this.cache.get(key);
+    const cached = this.cache.get(key);
 
     if (cached !== undefined) {
       return cached as T;
     }
 
-    const value =
-      await loader();
+    const value = await loader();
 
-    this.cache.set(
-      key,
-      value,
-      ttl
-        ? { ttl }
-        : { ttl: Infinity },
-    );
+    this.cache.set(key, value, ttl ? { ttl } : { ttl: Infinity });
 
     return value;
   }
 
-  get<T>(
-    key: string,
-  ): T | undefined {
-    return this.cache.get(key);
+  get<T>(key: string): T | undefined {
+    return this.cache.get(key) as T | undefined;
   }
 
-  set<T>(
-    key: string,
-    value: T,
-    ttl?: number,
-  ) {
-    this.cache.set(
-      key,
-      value,
-      ttl
-        ? { ttl }
-        : { ttl: Infinity },
-    );
+  set<T>(key: string, value: T, ttl?: number) {
+    this.cache.set(key, value, ttl ? { ttl } : { ttl: Infinity });
   }
 
-  delete(
-    key: string,
-  ) {
+  delete(key: string) {
     this.cache.delete(key);
   }
 
   async clear() {
-    // Clear memory
     this.cache.clear();
 
-    // Remove persisted cache
     try {
       await fs.unlink(this.filePath);
       console.log('Cache cleared');
-    } catch (error: any) {
-      // Ignore if file does not exist
-      if (error.code !== 'ENOENT') {
+    } catch (error: unknown) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
         throw error;
       }
     }
   }
 }
-
 
 export default CacheService;

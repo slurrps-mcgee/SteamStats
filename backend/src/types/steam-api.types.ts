@@ -1,8 +1,8 @@
 /**
  * Raw response shapes returned by the Steam Web API.
  *
- * These are intentionally separate from the normalized
- * @steamstats/shared types.
+ * These are intentionally separate from the HTTP contract
+ * schemas in backend/src/schemas.
  *
  * Anything that talks directly to Steam should use these types.
  */

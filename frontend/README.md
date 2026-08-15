@@ -11,7 +11,6 @@ Root setup (env, Docker, workspaces): [README.md](../README.md).
 From the **repo root** (backend should already be on `:3000`):
 
 ```bash
-npm run build:shared
 npm run dev:frontend
 ```
 
@@ -34,7 +33,8 @@ frontend/
 │   └── app/
 │       ├── app.ts / app.html    # shell: toolbar, sidenav, footer
 │       ├── app.routes.ts
-│       ├── api/                 # ApiService + profile/library/game/cache
+│       ├── api/                 # openapi.json + generated/ (ng-openapi-gen)
+│       ├── interfaces/          # re-exports of generated model names
 │       ├── components/
 │       ├── pages/
 │       ├── services/            # SteamSessionService, GameDetailsStore
@@ -72,12 +72,31 @@ Unknown paths redirect to dashboard.
 
 ```text
 Page  →  SteamSessionService / GameDetailsStore
-              →  ProfileApiService / LibraryApiService / GameApiService
-                    →  ApiService.request()  →  /api/v1/...
+              →  generated Api.invoke(getProfile | getLibrary | …)
+                    →  HttpClient  →  /api/v1/...
 ```
 
-- [`ApiService`](src/app/api/api.service.ts) — generic HTTP + cockatiel retries
-- Per-resource APIs under `src/app/api/` — paths and types only
+TypeBox validates JSON on the **API**. The SPA only gets TypeScript types from codegen; the browser does not re-run those schemas.
+
+Codegen is **not** automatic. After you change a backend route or TypeBox schema, from the **repo root**:
+
+```bash
+npm run generate:api
+```
+
+That writes (do not hand-edit):
+
+- [`api/openapi.json`](src/app/api/openapi.json) — dumped spec
+- [`api/generated/`](src/app/api/generated/) — `Api`, functions such as `getProfile` / `getLibrary`, request helpers
+
+Commit both so Docker frontend builds do not need a running API. Backend loop (Steam service → plugin → route → schema): [backend/README.md](../backend/README.md).
+
+Use the generated functions from stores and pages, for example `this.api.invoke(getProfile, { steamId })`. Do **not** add a hand-written `*.api.service.ts` or call `HttpClient` yourself for `/api/v1`.
+
+Short names (`OwnedGame`, `SteamProfile`) are re-exported from [`interfaces/api.ts`](src/app/interfaces/api.ts) for templates and stores.
+
+Cockatiel retries (5xx / network only; not aborted requests) run in [`retry.interceptor.ts`](src/app/interceptors/retry.interceptor.ts).
+
 - [`SteamSessionService`](src/app/services/steam-session.service.ts) — active Steam ID, profile, library
 - [`GameDetailsStore`](src/app/services/game-details.store.ts) — Store details with a short local cache
 
@@ -104,5 +123,5 @@ Output: `frontend/dist/steamstats/browser`.
 ## Extending
 
 - New page: add a route in `app.routes.ts` and a folder under `pages/`.
-- New backend call: add a method on the matching `*.api.service.ts` that calls `this.api.request({ path, method, ... })`.
+- New `/api/v1` endpoint: implement it on the backend (see [backend/README.md](../backend/README.md) Extending), then `npm run generate:api` from the repo root. Wire the new generated function through a store or page with `Api.invoke(...)`. Do not hand-edit `api/generated/` or add raw `HttpClient` wrappers.
 - Prefer Tailwind utilities and `ss-*` classes; keep SCSS for Material overrides and Steam `innerHTML`.

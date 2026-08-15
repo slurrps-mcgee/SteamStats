@@ -1,0 +1,1001 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SteamStats API",
+    "description": "API for Steam profile statistics, libraries, and wishlist data",
+    "version": "1.0.0"
+  },
+  "components": {
+    "schemas": {}
+  },
+  "paths": {
+    "/profile/{steamId}": {
+      "get": {
+        "operationId": "getProfile",
+        "tags": [
+          "profile"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^7656119\\d{10}$"
+            },
+            "in": "path",
+            "name": "steamId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "steamId",
+                    "personaName",
+                    "profileUrl",
+                    "avatar",
+                    "avatarMedium",
+                    "avatarFull",
+                    "personaState",
+                    "visibility"
+                  ],
+                  "properties": {
+                    "steamId": {
+                      "type": "string"
+                    },
+                    "personaName": {
+                      "type": "string"
+                    },
+                    "profileUrl": {
+                      "type": "string"
+                    },
+                    "avatar": {
+                      "type": "string"
+                    },
+                    "avatarMedium": {
+                      "type": "string"
+                    },
+                    "avatarFull": {
+                      "type": "string"
+                    },
+                    "personaState": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "enum": [
+                            0
+                          ]
+                        },
+                        {
+                          "type": "number",
+                          "enum": [
+                            1
+                          ]
+                        },
+                        {
+                          "type": "number",
+                          "enum": [
+                            2
+                          ]
+                        },
+                        {
+                          "type": "number",
+                          "enum": [
+                            3
+                          ]
+                        },
+                        {
+                          "type": "number",
+                          "enum": [
+                            4
+                          ]
+                        },
+                        {
+                          "type": "number",
+                          "enum": [
+                            5
+                          ]
+                        },
+                        {
+                          "type": "number",
+                          "enum": [
+                            6
+                          ]
+                        }
+                      ]
+                    },
+                    "visibility": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "public"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "private"
+                          ]
+                        }
+                      ]
+                    },
+                    "lastLogoffAt": {
+                      "type": "number"
+                    },
+                    "createdAt": {
+                      "type": "number"
+                    },
+                    "countryCode": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "error",
+                    "message"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/resolve": {
+      "post": {
+        "operationId": "resolveSteamId",
+        "tags": [
+          "profile"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "input"
+                ],
+                "properties": {
+                  "input": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 256
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "steamId"
+                  ],
+                  "properties": {
+                    "steamId": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "error",
+                    "message"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/library/{steamId}": {
+      "get": {
+        "operationId": "getLibrary",
+        "tags": [
+          "library"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^7656119\\d{10}$"
+            },
+            "in": "path",
+            "name": "steamId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "games",
+                    "stats"
+                  ],
+                  "properties": {
+                    "games": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "appId",
+                          "name",
+                          "playtimeForeverMinutes",
+                          "playtimeRecentMinutes",
+                          "iconUrl",
+                          "headerUrl"
+                        ],
+                        "properties": {
+                          "appId": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "playtimeForeverMinutes": {
+                            "type": "number"
+                          },
+                          "playtimeRecentMinutes": {
+                            "type": "number"
+                          },
+                          "iconUrl": {
+                            "type": "string"
+                          },
+                          "headerUrl": {
+                            "type": "string"
+                          },
+                          "lastPlayedAt": {
+                            "type": "number"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "stats": {
+                      "type": "object",
+                      "required": [
+                        "totalGames",
+                        "totalPlaytimeMinutes",
+                        "mostPlayedGame",
+                        "recentlyPlayedCount"
+                      ],
+                      "properties": {
+                        "totalGames": {
+                          "type": "number"
+                        },
+                        "totalPlaytimeMinutes": {
+                          "type": "number"
+                        },
+                        "mostPlayedGame": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "required": [
+                                "appId",
+                                "name",
+                                "playtimeForeverMinutes",
+                                "playtimeRecentMinutes",
+                                "iconUrl",
+                                "headerUrl"
+                              ],
+                              "properties": {
+                                "appId": {
+                                  "type": "number"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "playtimeForeverMinutes": {
+                                  "type": "number"
+                                },
+                                "playtimeRecentMinutes": {
+                                  "type": "number"
+                                },
+                                "iconUrl": {
+                                  "type": "string"
+                                },
+                                "headerUrl": {
+                                  "type": "string"
+                                },
+                                "lastPlayedAt": {
+                                  "type": "number"
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "recentlyPlayedCount": {
+                          "type": "number"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "error",
+                    "message"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/library/{steamId}/random": {
+      "get": {
+        "operationId": "getRandomGame",
+        "tags": [
+          "library"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^7656119\\d{10}$"
+            },
+            "in": "path",
+            "name": "steamId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "appId",
+                    "name",
+                    "playtimeForeverMinutes",
+                    "playtimeRecentMinutes",
+                    "iconUrl",
+                    "headerUrl"
+                  ],
+                  "properties": {
+                    "appId": {
+                      "type": "number"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "playtimeForeverMinutes": {
+                      "type": "number"
+                    },
+                    "playtimeRecentMinutes": {
+                      "type": "number"
+                    },
+                    "iconUrl": {
+                      "type": "string"
+                    },
+                    "headerUrl": {
+                      "type": "string"
+                    },
+                    "lastPlayedAt": {
+                      "type": "number"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "error",
+                    "message"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/library/{steamId}/recent": {
+      "get": {
+        "operationId": "getRecentlyPlayedGames",
+        "tags": [
+          "library"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^7656119\\d{10}$"
+            },
+            "in": "path",
+            "name": "steamId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "appId",
+                      "name",
+                      "playtimeForeverMinutes",
+                      "playtimeRecentMinutes",
+                      "iconUrl",
+                      "headerUrl"
+                    ],
+                    "properties": {
+                      "appId": {
+                        "type": "number"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "playtimeForeverMinutes": {
+                        "type": "number"
+                      },
+                      "playtimeRecentMinutes": {
+                        "type": "number"
+                      },
+                      "iconUrl": {
+                        "type": "string"
+                      },
+                      "headerUrl": {
+                        "type": "string"
+                      },
+                      "lastPlayedAt": {
+                        "type": "number"
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "error",
+                    "message"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/library/refresh": {
+      "get": {
+        "operationId": "refreshApps",
+        "tags": [
+          "library"
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "message",
+                    "status"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "number"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/{appId}": {
+      "get": {
+        "operationId": "getGameDetails",
+        "tags": [
+          "games"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "appId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "appId",
+                    "name",
+                    "isFree",
+                    "requiredAge",
+                    "headerImage",
+                    "capsuleImage",
+                    "shortDescription",
+                    "description",
+                    "developers",
+                    "publishers",
+                    "releaseDate",
+                    "platforms",
+                    "genres",
+                    "categories",
+                    "screenshots"
+                  ],
+                  "properties": {
+                    "appId": {
+                      "type": "number"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "isFree": {
+                      "type": "boolean"
+                    },
+                    "requiredAge": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "controllerSupport": {
+                      "type": "string"
+                    },
+                    "headerImage": {
+                      "type": "string"
+                    },
+                    "capsuleImage": {
+                      "type": "string"
+                    },
+                    "shortDescription": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "developers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "publishers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "releaseDate": {
+                      "type": "object",
+                      "required": [
+                        "comingSoon",
+                        "date"
+                      ],
+                      "properties": {
+                        "comingSoon": {
+                          "type": "boolean"
+                        },
+                        "date": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "price": {
+                      "type": "object",
+                      "required": [
+                        "currency",
+                        "initial",
+                        "final",
+                        "discountPercent",
+                        "initialFormatted",
+                        "finalFormatted"
+                      ],
+                      "properties": {
+                        "currency": {
+                          "type": "string"
+                        },
+                        "initial": {
+                          "type": "number"
+                        },
+                        "final": {
+                          "type": "number"
+                        },
+                        "discountPercent": {
+                          "type": "number"
+                        },
+                        "initialFormatted": {
+                          "type": "string"
+                        },
+                        "finalFormatted": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "platforms": {
+                      "type": "object",
+                      "required": [
+                        "windows",
+                        "mac",
+                        "linux"
+                      ],
+                      "properties": {
+                        "windows": {
+                          "type": "boolean"
+                        },
+                        "mac": {
+                          "type": "boolean"
+                        },
+                        "linux": {
+                          "type": "boolean"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "genres": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "description"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "categories": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "description"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "screenshots": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "thumbnail",
+                          "full"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "thumbnail": {
+                            "type": "string"
+                          },
+                          "full": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "achievements": {
+                      "type": "object",
+                      "required": [
+                        "total",
+                        "highlighted"
+                      ],
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        },
+                        "highlighted": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "path": {
+                                "type": "string"
+                              },
+                              "icon": {
+                                "type": "string"
+                              },
+                              "localizedName": {
+                                "type": "string"
+                              },
+                              "archived": {
+                                "type": "number"
+                              },
+                              "hidden": {
+                                "type": "number"
+                              }
+                            },
+                            "additionalProperties": true
+                          }
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "metacritic": {
+                      "type": "object",
+                      "required": [
+                        "score",
+                        "url"
+                      ],
+                      "properties": {
+                        "score": {
+                          "type": "number"
+                        },
+                        "url": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "requirements": {
+                      "type": "object",
+                      "properties": {
+                        "minimum": {
+                          "type": "string"
+                        },
+                        "recommended": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "website": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "error",
+                    "message"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cache/clear": {
+      "get": {
+        "operationId": "clearCache",
+        "tags": [
+          "cache"
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "message",
+                    "status"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "number"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "API v1"
+    }
+  ]
+}

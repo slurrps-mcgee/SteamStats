@@ -11,7 +11,6 @@ Root setup (env, Docker, workspaces): [README.md](../README.md).
 From the **repo root** (after `npm ci` and a filled-in `.env`):
 
 ```bash
-npm run build:shared
 npm run dev:backend
 ```
 
@@ -49,7 +48,7 @@ backend/
 │   │   ├── cache.service.ts
 │   │   └── api/
 │   │       ├── api.client.ts    # HTTP to Steam Web + Store
-│   │       └── steam/           # user, library, game, apps, achievements
+│   │       └── steam/           # user, library, game, apps
 │   ├── types/
 │   └── utils/steam-id.util.ts
 ├── dev/                         # Postman collections
@@ -76,7 +75,7 @@ Route  →  steam.* service  →  ApiClient.request({ host, path, params })
 
 [`steam.plugin.ts`](src/plugins/steam.plugin.ts) constructs one `ApiClient` and the steam services, then decorates `fastify.steam`.
 
-Responses that can be reused go through [`cache.service.ts`](src/services/cache.service.ts) (in-memory / file-backed LRU).
+Responses that can be reused go through [`cache.service.ts`](src/services/cache.service.ts) (in-memory / file-backed LRU). Persisted `cache.json` entries keep their remaining TTL across restarts; keys with no TTL (`steam:apps`) stay until cleared.
 
 ---
 
@@ -122,8 +121,19 @@ Store `appdetails` does not use the Web API key.
 
 ## Extending
 
-1. Add or change a Steam call in the matching `services/api/steam/*.ts` file via `this.client.request({ host, path, params })`.
-2. Expose it from a route under `src/routes/` with a schema in `src/schemas/` if needed.
-3. Register the route in [`src/routes/index.ts`](src/routes/index.ts) if you add a new file.
+Adding a Steam-backed API feature:
 
-Do not put Steam endpoint paths on `ApiClient`.
+1. **Steam I/O** — implement or extend a class under [`src/services/api/steam/`](src/services/api/steam/) with `this.client.request({ host, path, params })`. Extra methods on an existing class (for example `SteamLibraryService`) do **not** need a new plugin entry.
+2. **Plugin** — only if you added a **new** domain class, construct it in [`src/plugins/steam.plugin.ts`](src/plugins/steam.plugin.ts) and hang it on `fastify.steam`.
+3. **Route** — expose HTTP under [`src/routes/`](src/routes/) that calls `fastify.steam.*`. Register a new file in [`src/routes/index.ts`](src/routes/index.ts).
+4. **HTTP contract** — TypeBox schemas in [`src/schemas/`](src/schemas/) describe what `/api/v1` accepts and returns. Attach `schema.body` / `params` / `response`, plus `tags` and `operationId`, on **each route**. That is not one schema file per Steam service; one service can back several routes.
+5. **Steam’s JSON** — keep raw Web/Store shapes in [`src/types/steam-api.types.ts`](src/types/steam-api.types.ts) (and store types). The SPA never imports those.
+6. **Generate the SPA client** — this is **manual**, not on save. From the **repo root**:
+
+```bash
+npm run generate:api
+```
+
+Commit [`frontend/src/app/api/openapi.json`](../frontend/src/app/api/openapi.json) and [`frontend/src/app/api/generated/`](../frontend/src/app/api/generated/). How the Angular app uses those files: [frontend/README.md](../frontend/README.md).
+
+Stay **one Fastify process**. Do not put Steam endpoint paths on `ApiClient`.

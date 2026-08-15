@@ -9,8 +9,9 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import type { OwnedGame } from '@steamstats/shared';
-import { LibraryApiService } from '../../api/library.api.service';
+import type { OwnedGame } from '../../interfaces/api';
+import { Api } from '../../api/generated/api';
+import { getRandomGame } from '../../api/generated/functions';
 import { SteamSessionService } from '../../services/steam-session.service';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import { PlaytimePipe } from '../../pipes/playtime.pipe';
@@ -24,7 +25,7 @@ import { steamHeaderCandidates } from '../../utils/steam-artwork';
   templateUrl: './random-game.html',
 })
 export class RandomGame {
-  private readonly libraryApi = inject(LibraryApiService);
+  private readonly api = inject(Api);
   protected readonly session = inject(SteamSessionService);
 
   protected readonly game = signal<OwnedGame | null>(null);
@@ -72,12 +73,12 @@ export class RandomGame {
 
   private pickRandomGame(steamId: string): void {
     this.loading.set(true);
-    this.libraryApi.getRandomGame(steamId).subscribe({
-      next: (game) => {
+    void this.api.invoke(getRandomGame, { steamId }).then(
+      (game) => {
         this.game.set(game);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
-    });
+      () => this.loading.set(false),
+    );
   }
 }

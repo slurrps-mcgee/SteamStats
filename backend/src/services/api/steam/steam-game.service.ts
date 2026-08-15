@@ -1,4 +1,4 @@
-import type { SteamGameDetails } from '@steamstats/shared';
+import type { SteamGameDetails } from '../../../schemas/game-details.schema';
 import type { SteamStoreGameData } from '../../../types/steam-store.types';
 
 import type CacheService from '../../cache.service';

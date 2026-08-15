@@ -1,6 +1,4 @@
 #!/bin/sh
-# Local development only — rebuilds shared types after bind-mount, then execs the service command.
+# Local development only — execs the service command after bind-mount.
 set -e
-
-npm run build --workspace=@steamstats/shared
 exec "$@"

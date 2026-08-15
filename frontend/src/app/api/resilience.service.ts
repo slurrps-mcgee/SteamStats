@@ -7,9 +7,41 @@ import {
   wrap,
 } from 'cockatiel';
 
-/** Retry / break only on network failures and HTTP 5xx — not on 4xx. */
-function isRetriableError(err: unknown): boolean {
-  const anyErr = err as any;
+/** Navigation, interceptor unsubscribe, or Firefox NS_BINDING_ABORTED. */
+export function isAbortedError(err: unknown): boolean {
+  const anyErr = err as {
+    name?: string;
+    message?: string;
+    status?: number;
+    error?: { type?: string; message?: string };
+  };
+
+  if (anyErr?.name === 'AbortError' || anyErr?.name === 'CanceledError') {
+    return true;
+  }
+
+  const message = `${anyErr?.message ?? ''} ${anyErr?.error?.message ?? ''}`;
+  if (message.includes('NS_BINDING_ABORTED') || /abort/i.test(message)) {
+    return true;
+  }
+
+  return anyErr?.status === 0 && anyErr?.error?.type === 'abort';
+}
+
+/** Retry / break only on network failures and HTTP 5xx — not on 4xx or aborts. */
+export function isRetriableError(err: unknown): boolean {
+  if (isAbortedError(err)) {
+    return false;
+  }
+
+  const anyErr = err as {
+    name?: string;
+    status?: number;
+    statusCode?: number;
+    response?: { status?: number };
+    error?: { status?: number };
+  };
+
   const status: number | undefined =
     anyErr?.status ??
     anyErr?.statusCode ??
@@ -17,13 +49,18 @@ function isRetriableError(err: unknown): boolean {
     anyErr?.error?.status;
 
   if (typeof status === 'number') {
+    if (status === 0) {
+      return true;
+    }
     return status >= 500 && status < 600;
   }
 
-  // HttpClient network errors often have status 0 or no status
-  if (status === 0) return true;
-  if (anyErr?.name === 'TimeoutError') return true;
-  if (typeof status !== 'number' && anyErr instanceof Error) return true;
+  if (anyErr?.name === 'TimeoutError') {
+    return true;
+  }
+  if (typeof status !== 'number' && err instanceof Error) {
+    return true;
+  }
 
   return false;
 }

@@ -1,11 +1,11 @@
-import type { FastifyPluginAsync } from 'fastify';
+import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import profileRoute from './profile.route';
 import libraryRoute from './library.route';
 import gameRoute from './game.route';
 import cacheRoute from './cache.route';
 
 /** Registers all `/api/v1` routes. */
-const v1Routes: FastifyPluginAsync = async (fastify) => {
+const v1Routes: FastifyPluginAsyncTypebox = async (fastify) => {
   await fastify.register(profileRoute);
   await fastify.register(libraryRoute);
   await fastify.register(gameRoute);

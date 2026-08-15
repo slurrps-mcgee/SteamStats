@@ -18,7 +18,8 @@ SteamStats is an **npm workspaces** monorepo:
 | ------- | ---- |
 | `frontend/` | Angular 22 SPA (Material + Tailwind) |
 | `backend/` | Fastify API that proxies Steam Web API and Store `appdetails` |
-| `shared/` | Type-only `@steamstats/shared` interfaces |
+
+The HTTP contract is OpenAPI. Live docs: [http://localhost:3000/docs](http://localhost:3000/docs). Architecture stays **one Fastify API process plus the Angular SPA** — OpenAPI does not mean splitting profile, library, or games into more services.
 
 More detail: [backend/README.md](backend/README.md) · [frontend/README.md](frontend/README.md)
 
@@ -57,7 +58,6 @@ Set `FRONTEND_ORIGIN` to the origin you actually open in the browser:
 
 ```bash
 npm ci
-npm run build:shared
 ```
 
 ---
@@ -107,13 +107,49 @@ UI: [http://localhost:8080](http://localhost:8080) (`/api` reverse-proxied by ng
 
 ---
 
+## HTTP contract (OpenAPI)
+
+TypeBox on Fastify routes is the source of truth. There is no shared TypeScript package. Live spec: [http://localhost:3000/docs](http://localhost:3000/docs). Architecture stays **one Fastify process plus the Angular SPA** — OpenAPI is not a reason to split profile, library, or games into more services.
+
+### Backend (new Steam-backed endpoint)
+
+1. **Steam I/O** — implement or extend a class under [`backend/src/services/api/steam/`](backend/src/services/api/steam/) with `this.client.request({ host, path, params })`. Extra methods on an existing class do **not** need a new plugin entry.
+2. **Plugin** — only if you added a **new** domain class, construct it in [`backend/src/plugins/steam.plugin.ts`](backend/src/plugins/steam.plugin.ts) and hang it on `fastify.steam`.
+3. **Route** — expose HTTP in [`backend/src/routes/`](backend/src/routes/) that calls `fastify.steam.*`. Register a new file in [`backend/src/routes/index.ts`](backend/src/routes/index.ts).
+4. **Schemas** — TypeBox in [`backend/src/schemas/`](backend/src/schemas/) is the HTTP contract (request/response **per route**, not one file per Steam service). Attach `schema.body` / `params` / `response`, plus `tags` and `operationId`.
+5. **Steam’s JSON** — keep raw Web/Store shapes in [`backend/src/types/steam-api.types.ts`](backend/src/types/steam-api.types.ts). The SPA never imports those.
+
+### Generate the SPA client (manual, not on save)
+
+From the **repo root**:
+
+```bash
+npm run generate:api
+```
+
+That writes (do not hand-edit):
+
+- [`frontend/src/app/api/openapi.json`](frontend/src/app/api/openapi.json) — dumped spec
+- [`frontend/src/app/api/generated/`](frontend/src/app/api/generated/) — `Api` plus functions such as `getProfile` / `getLibrary`
+
+Commit both so the frontend Docker image can build without a running API.
+
+### Frontend
+
+TypeBox validates JSON on the **API**. The SPA only gets TypeScript types.
+
+Use generated functions from stores and pages, for example `this.api.invoke(getProfile, { steamId })`. Do **not** add a hand-written `*.api.service.ts` or call `HttpClient` yourself for `/api/v1`. Short names (`OwnedGame`, `SteamProfile`) live in [`frontend/src/app/interfaces/api.ts`](frontend/src/app/interfaces/api.ts). Retries (5xx / network) are in the HTTP interceptor.
+
+Package-level detail: [backend/README.md](backend/README.md) · [frontend/README.md](frontend/README.md).
+
+---
+
 ## Project layout
 
 ```text
 /
-├── frontend/          Angular app
+├── frontend/          Angular app (openapi.json + generated/ under src/app/api/)
 ├── backend/           Fastify API
-├── shared/            @steamstats/shared types
 ├── scripts/           Docker dev entrypoint
 ├── docker-compose.yml
 ├── docker-compose.prod.example.yml

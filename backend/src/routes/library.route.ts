@@ -1,33 +1,15 @@
-import type { FastifyPluginAsync } from 'fastify';
+import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 
-import type {
-  LibraryResponse,
-  // WishlistResponse,
-  RandomGameResponse,
-  RecentlyPlayedGame
-} from '@steamstats/shared';
-
+import { ApiErrorSchema, StatusMessageSchema } from '../schemas/common.schema';
 import {
-  steamIdParamSchema,
-  type SteamIdParams,
-} from '../schemas/steam-id-param.schema';
+  LibraryResponseSchema,
+  OwnedGameSchema,
+  RecentlyPlayedGamesSchema,
+} from '../schemas/library.schema';
+import { SteamIdParamsSchema } from '../schemas/steam-id-param.schema';
 
-
-/**
- * Library-related routes.
- *
- * Handles:
- * - Owned games
- * - Wishlist
- * - Future library statistics
- */
-const libraryRoute: FastifyPluginAsync = async (fastify) => {
-  /**
-   * GET /api/v1/library/:steamId
-   *
-   * Returns owned games and library statistics.
-   */
-  fastify.get<{ Params: SteamIdParams }>(
+const libraryRoute: FastifyPluginAsyncTypebox = async (fastify) => {
+  fastify.get(
     '/library/:steamId',
     {
       config: {
@@ -36,54 +18,40 @@ const libraryRoute: FastifyPluginAsync = async (fastify) => {
           timeWindow: '1 minute',
         },
       },
-
       schema: {
-        params: steamIdParamSchema,
+        tags: ['library'],
+        operationId: 'getLibrary',
+        params: SteamIdParamsSchema,
+        response: {
+          200: LibraryResponseSchema,
+          404: ApiErrorSchema,
+        },
       },
     },
-
-    async (
-      request,
-    ): Promise<LibraryResponse> => {
-
-      return fastify.steam.library.getLibrary(
-        request.params.steamId,
-      );
-
+    async (request) => {
+      return fastify.steam.library.getLibrary(request.params.steamId);
     },
   );
 
-
-  /**
- * GET /api/v1/library/:steamId/random
- *
- * Returns a random game from the user's library.
- */
-  fastify.get<{ Params: SteamIdParams }>(
+  fastify.get(
     '/library/:steamId/random',
     {
       schema: {
-        params: steamIdParamSchema,
+        tags: ['library'],
+        operationId: 'getRandomGame',
+        params: SteamIdParamsSchema,
+        response: {
+          200: OwnedGameSchema,
+          404: ApiErrorSchema,
+        },
       },
     },
-
-    async (
-      request,
-    ): Promise<RandomGameResponse> => {
-
-      return fastify.steam.library.getRandomGame(
-        request.params.steamId,
-      );
-
+    async (request) => {
+      return fastify.steam.library.getRandomGame(request.params.steamId);
     },
   );
 
-  /**
- * GET /api/v1/library/:steamId/recent
- *
- * Returns games played within the last 2 weeks.
- */
-  fastify.get<{ Params: SteamIdParams }>(
+  fastify.get(
     '/library/:steamId/recent',
     {
       config: {
@@ -92,20 +60,18 @@ const libraryRoute: FastifyPluginAsync = async (fastify) => {
           timeWindow: '1 minute',
         },
       },
-
       schema: {
-        params: steamIdParamSchema,
+        tags: ['library'],
+        operationId: 'getRecentlyPlayedGames',
+        params: SteamIdParamsSchema,
+        response: {
+          200: RecentlyPlayedGamesSchema,
+          404: ApiErrorSchema,
+        },
       },
     },
-
-    async (
-      request,
-    ): Promise<RecentlyPlayedGame[]> => {
-
-      return fastify.steam.library.getRecentlyPlayedGames(
-        request.params.steamId,
-      );
-
+    async (request) => {
+      return fastify.steam.library.getRecentlyPlayedGames(request.params.steamId);
     },
   );
 
@@ -118,48 +84,19 @@ const libraryRoute: FastifyPluginAsync = async (fastify) => {
           timeWindow: '1 minute',
         },
       },
+      schema: {
+        tags: ['library'],
+        operationId: 'refreshApps',
+        response: {
+          200: StatusMessageSchema,
+        },
+      },
     },
-
-    async (
-      request,
-    ): Promise<{ message: string; status: number }> => {
+    async () => {
       await fastify.steam.apps.refreshApps();
-      return { message: "SteamApps list refreshed successfully", status: 200 };
+      return { message: 'SteamApps list refreshed successfully', status: 200 };
     },
   );
-
-  /**
-   * GET /api/v1/library/:steamId/wishlist
-   *
-   * Returns wishlist games with app metadata resolved.
-   */
-  // fastify.get<{ Params: SteamIdParams }>(
-  //   '/library/:steamId/wishlist',
-  //   {
-  //     config: {
-  //       rateLimit: {
-  //         max: 10,
-  //         timeWindow: '1 minute',
-  //       },
-  //     },
-
-  //     schema: {
-  //       params: steamIdParamSchema,
-  //     },
-  //   },
-
-  //   async (
-  //     request,
-  //   ): Promise<WishlistResponse> => {
-
-  //     return fastify.steam.library.getWishlist(
-  //       request.params.steamId,
-  //     );
-
-  //   },
-  // );
-
 };
-
 
 export default libraryRoute;

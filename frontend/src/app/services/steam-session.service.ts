@@ -8,11 +8,10 @@ import {
 import type {
   SteamProfile,
   LibraryResponse,
-} from '@steamstats/shared';
+} from '../interfaces/api';
 
-import { LibraryApiService } from '../api/library.api.service';
-import { ProfileApiService } from '../api/profile.api.service';
-import { firstValueFrom } from 'rxjs';
+import { Api } from '../api/generated/api';
+import { getLibrary, getProfile, resolveSteamId } from '../api/generated/functions';
 
 const STORAGE_KEY = 'steamstats.steamId';
 
@@ -27,8 +26,7 @@ export class SteamSessionService {
     this.restoreSession();
   }
 
-  private readonly profileApi = inject(ProfileApiService);
-  private readonly libraryApi = inject(LibraryApiService);
+  private readonly api = inject(Api);
 
   private readonly steamIdSignal = signal<string | null>(this.readStoredSteamId());
   private readonly profileSignal = signal<SteamProfile | null>(null);
@@ -65,7 +63,7 @@ export class SteamSessionService {
 
     void (async () => {
       try {
-        const data = await firstValueFrom(this.profileApi.resolveSteamId(input));
+        const data = await this.api.invoke(resolveSteamId, { body: { input } });
         if (gen !== this.resolveGeneration) {
           return;
         }
@@ -103,7 +101,7 @@ export class SteamSessionService {
 
     this.libraryInFlight = (async () => {
       try {
-        const data = await firstValueFrom(this.libraryApi.getLibrary(steamId));
+        const data = await this.api.invoke(getLibrary, { steamId });
         if (gen !== this.libraryGeneration) {
           return;
         }
@@ -163,7 +161,7 @@ export class SteamSessionService {
 
     void (async () => {
       try {
-        const data = await firstValueFrom(this.profileApi.getProfile(steamId));
+        const data = await this.api.invoke(getProfile, { steamId });
         if (gen !== this.profileGeneration) {
           return;
         }

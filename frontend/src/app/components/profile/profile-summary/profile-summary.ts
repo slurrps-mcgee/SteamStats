@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import type { SteamProfile } from '@steamstats/shared';
+import type { SteamProfile } from '../../../interfaces/api';
 import { SteamDatePipe } from '../../../pipes/steamdate.pipe';
 import { DatePipe } from '@angular/common';
 

@@ -6,7 +6,7 @@ import {
   linkedSignal,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import type { OwnedGame } from '@steamstats/shared';
+import type { OwnedGame } from '../../interfaces/api';
 import { PlaytimePipe } from '../../pipes/playtime.pipe';
 import { steamHeaderCandidates } from '../../utils/steam-artwork';
 

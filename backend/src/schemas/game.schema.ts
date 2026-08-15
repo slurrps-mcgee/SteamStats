@@ -1,11 +1,10 @@
-export const gameParamsSchema = {
-  type: 'object',
-  properties: {
-    appId: { type: 'string' },
-  },
-  required: ['appId'],
-};
+import { Type } from 'typebox';
 
-export interface GameParams {
-  appId: string;
-}
+export const GameParamsSchema = Type.Object(
+  {
+    appId: Type.String(),
+  },
+  { additionalProperties: false },
+);
+
+export type GameParams = Type.Static<typeof GameParamsSchema>;

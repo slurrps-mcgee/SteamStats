@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
-import type { SteamGameDetails } from '@steamstats/shared';
-import { firstValueFrom } from 'rxjs';
-import { GameApiService } from '../api/game.api.service';
+import type { SteamGameDetails } from '../interfaces/api';
+import { Api } from '../api/generated/api';
+import { getGameDetails } from '../api/generated/functions';
 
 const STORAGE_KEY = 'steamstats.gameDetails';
 const TTL_MS = 1000 * 60 * 60 * 24 * 2; // 2 days
@@ -20,7 +20,7 @@ type CacheMap = Record<string, CacheEntry>;
  */
 @Injectable({ providedIn: 'root' })
 export class GameDetailsStore {
-  private readonly gameApi = inject(GameApiService);
+  private readonly api = inject(Api);
 
   private readonly memory = new Map<string, CacheEntry>();
   private loadGeneration = 0;
@@ -84,7 +84,7 @@ export class GameDetailsStore {
 
   private async fetchAndCache(key: string): Promise<SteamGameDetails | null> {
     try {
-      const data = await firstValueFrom(this.gameApi.getGameDetails(key));
+      const data = await this.api.invoke(getGameDetails, { appId: key });
       this.writeCache(key, data);
       return data;
     } catch {

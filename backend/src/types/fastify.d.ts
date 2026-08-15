@@ -1,14 +1,13 @@
 import type { AppConfig } from '../config/env';
-import type { CacheService } from '../services/cache.service';
-import { SteamService } from '../services/steam.service';
+import type CacheService from '../services/cache.service';
 
 /**
- * A module augmentation for the Fastify instance to include strongly typed `config`, `cache`, and `steamService` properties.
+ * Fastify instance augmentation for config and cache.
+ * Steam services are declared in plugins/steam.plugin.ts.
  */
 declare module 'fastify' {
   interface FastifyInstance {
     config: AppConfig;
     cache: CacheService;
-    steamService: SteamService;
   }
 }

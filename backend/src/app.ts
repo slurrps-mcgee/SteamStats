@@ -1,4 +1,8 @@
 import Fastify, { type FastifyInstance, type FastifyError } from 'fastify';
+import {
+  TypeBoxValidatorCompiler,
+  type TypeBoxTypeProvider,
+} from '@fastify/type-provider-typebox';
 import sensible from '@fastify/sensible';
 import type { AppConfig } from './config/env';
 import { configPlugin } from './plugins/config.plugin';
@@ -14,14 +18,14 @@ import helmetPlugin from './plugins/helmet.plugin';
 
 /** Builds (but does not start) a fully configured Fastify instance. */
 export function buildApp(config: AppConfig): FastifyInstance {
-  // Create a new Fastify instance with the provided configuration.
   const fastify = Fastify({
     logger: {
       level: config.nodeEnv === 'production' ? 'info' : 'debug',
     },
-  });
+  })
+    .setValidatorCompiler(TypeBoxValidatorCompiler)
+    .withTypeProvider<TypeBoxTypeProvider>();
 
-  // Register application plugins in the correct order.
   fastify.register(configPlugin(config));
   fastify.register(helmetPlugin);
   fastify.register(sensible);
@@ -32,11 +36,8 @@ export function buildApp(config: AppConfig): FastifyInstance {
   fastify.register(steamServicePlugin);
   fastify.register(v1Routes, { prefix: '/api/v1' });
 
-
-  // Health check endpoint to verify that the server is running.
   fastify.get('/health', async () => ({ status: 'ok' }));
 
-  // Set a custom error handler to manage different types of errors consistently.
   fastify.setErrorHandler((error: FastifyError, _request, reply) => {
     if (error instanceof SteamNotFoundError) {
       reply.status(404).send({
@@ -72,7 +73,6 @@ export function buildApp(config: AppConfig): FastifyInstance {
       message: config.nodeEnv === 'production' ? 'Something went wrong' : error.message,
     });
   });
-  
-  // Return the fully configured Fastify instance.
+
   return fastify;
 }

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
-import type { OwnedGame } from '@steamstats/shared';
+import type { OwnedGame } from '../../interfaces/api';
 import { SteamSessionService } from '../../services/steam-session.service';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import { PlaytimePipe } from '../../pipes/playtime.pipe';

@@ -1,35 +1,15 @@
-import type { FastifyPluginAsync } from 'fastify';
+import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 
-import type {
-  SteamProfile,
-  ResolveSteamIdResponse,
-} from '@steamstats/shared';
-
+import { ApiErrorSchema } from '../schemas/common.schema';
 import {
-  steamIdParamSchema,
-  type SteamIdParams,
-} from '../schemas/steam-id-param.schema';
+  ResolveBodySchema,
+  ResolveSteamIdResponseSchema,
+  SteamProfileSchema,
+} from '../schemas/profile.schema';
+import { SteamIdParamsSchema } from '../schemas/steam-id-param.schema';
 
-import {
-  resolveBodySchema,
-  type ResolveBody,
-} from '../schemas/resolve.schema';
-
-
-/**
- * User/profile routes.
- *
- * Handles:
- * - Steam profile lookup
- * - Steam ID resolution
- */
-const profileRoute: FastifyPluginAsync = async (fastify) => {
-  /**
-   * GET /api/v1/profile/:steamId
-   *
-   * Returns normalized Steam profile data.
-   */
-  fastify.get<{ Params: SteamIdParams }>(
+const profileRoute: FastifyPluginAsyncTypebox = async (fastify) => {
+  fastify.get(
     '/profile/:steamId',
     {
       config: {
@@ -39,55 +19,38 @@ const profileRoute: FastifyPluginAsync = async (fastify) => {
         },
       },
       schema: {
-        params: steamIdParamSchema,
+        tags: ['profile'],
+        operationId: 'getProfile',
+        params: SteamIdParamsSchema,
+        response: {
+          200: SteamProfileSchema,
+          404: ApiErrorSchema,
+        },
       },
     },
-
-    async (
-      request,
-    ): Promise<SteamProfile> => {
-
-      return fastify.steam.user.getProfile(
-        request.params.steamId,
-      );
-
+    async (request) => {
+      return fastify.steam.user.getProfile(request.params.steamId);
     },
   );
 
-  /**
-   * POST /api/v1/profile/resolve
-   *
-   * Resolves:
-   * - SteamID64
-   * - vanity URLs
-   * - supported Steam profile inputs
-   */
-  fastify.post<{ Body: ResolveBody }>(
+  fastify.post(
     '/profile/resolve',
     {
       schema: {
-        body: resolveBodySchema,
+        tags: ['profile'],
+        operationId: 'resolveSteamId',
+        body: ResolveBodySchema,
+        response: {
+          200: ResolveSteamIdResponseSchema,
+          404: ApiErrorSchema,
+        },
       },
     },
-
-    async (
-      request,
-    ): Promise<ResolveSteamIdResponse> => {
-
-      const steamId =
-        await fastify.steam.user.resolveSteamId(
-          request.body.input,
-        );
-
-
-      return {
-        steamId,
-      };
-
+    async (request) => {
+      const steamId = await fastify.steam.user.resolveSteamId(request.body.input);
+      return { steamId };
     },
   );
-
 };
-
 
 export default profileRoute;

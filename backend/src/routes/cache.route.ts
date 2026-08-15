@@ -1,24 +1,30 @@
-import type { FastifyPluginAsync } from 'fastify';
+import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 
+import { StatusMessageSchema } from '../schemas/common.schema';
 
-const cacheRoute: FastifyPluginAsync = async (fastify) => {
-    fastify.get(
-        '/cache/clear',
-        {
-            config: {
-                rateLimit: {
-                    max: 10,
-                    timeWindow: '1 minute',
-                },
-            },
+const cacheRoute: FastifyPluginAsyncTypebox = async (fastify) => {
+  fastify.get(
+    '/cache/clear',
+    {
+      config: {
+        rateLimit: {
+          max: 10,
+          timeWindow: '1 minute',
         },
-        async (
-            request,
-        ): Promise<{ message: string; status: number }> => {
-            await fastify.cache.clear();
-            return { message: "Cache cleared successfully", status: 200 };
+      },
+      schema: {
+        tags: ['cache'],
+        operationId: 'clearCache',
+        response: {
+          200: StatusMessageSchema,
         },
-    );
+      },
+    },
+    async () => {
+      await fastify.cache.clear();
+      return { message: 'Cache cleared successfully', status: 200 };
+    },
+  );
 };
 
 export default cacheRoute;

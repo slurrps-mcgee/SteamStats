@@ -2,18 +2,17 @@
   "name": "steamstats",
   "version": "0.3.0",
   "private": true,
-  "description": "SteamStats monorepo - Angular frontend, Fastify backend, and shared TypeScript types.",
+  "description": "SteamStats monorepo - Angular frontend and Fastify backend.",
   "workspaces": [
-    "shared",
     "backend",
     "frontend"
   ],
   "scripts": {
-    "build:shared": "npm run build --workspace=@steamstats/shared",
+    "generate:api": "npm run dump:openapi --workspace=backend && npm run generate:api --workspace=frontend",
     "dev:backend": "npm run dev --workspace=backend",
     "dev:frontend": "npm run start --workspace=frontend",
-    "build:backend": "npm run build:shared && npm run build --workspace=backend",
-    "build:frontend": "npm run build:shared && npm run build --workspace=frontend"
+    "build:backend": "npm run build --workspace=backend",
+    "build:frontend": "npm run build --workspace=frontend"
   },
   "dependencies": {
   },

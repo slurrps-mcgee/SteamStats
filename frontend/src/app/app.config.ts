@@ -5,13 +5,16 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 
 import { routes } from './app.routes';
 import { errorInterceptor } from './interceptors/error.interceptor';
+import { retryInterceptor } from './interceptors/retry.interceptor';
+import { provideApiConfiguration } from './api/generated/api-configuration';
 import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([errorInterceptor])),
+    provideHttpClient(withInterceptors([errorInterceptor, retryInterceptor])),
+    provideApiConfiguration('/api/v1'),
     provideAnimationsAsync(),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),

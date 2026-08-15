@@ -1,7 +1,7 @@
 import type {
   SteamProfile,
   SteamPersonaState,
-} from '@steamstats/shared';
+} from '../../../schemas/profile.schema';
 
 import { ApiClient } from '../api.client';
 import type { SteamPlayerSummariesResponse, SteamResolveVanityUrlResponse } from '../../../types/steam-api.types';

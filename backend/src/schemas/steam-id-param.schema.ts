@@ -1,15 +1,10 @@
-/** Fastify JSON schema for the `steamId` route param, shared by most routes. */
-export const steamIdParamSchema = {
-  type: 'object',
-  required: ['steamId'],
-  properties: {
-    steamId: {
-      type: 'string',
-      pattern: '^7656119\\d{10}$',
-    },
-  },
-} as const;
+import { Type } from 'typebox';
 
-export interface SteamIdParams {
-  steamId: string;
-}
+export const SteamIdParamsSchema = Type.Object(
+  {
+    steamId: Type.String({ pattern: '^7656119\\d{10}$' }),
+  },
+  { additionalProperties: false },
+);
+
+export type SteamIdParams = Type.Static<typeof SteamIdParamsSchema>;
