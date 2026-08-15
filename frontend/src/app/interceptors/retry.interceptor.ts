@@ -1,6 +1,6 @@
 import type { HttpInterceptorFn } from '@angular/common/http';
 import { defer, from, lastValueFrom } from 'rxjs';
-import { defaultPolicy } from '../api/resilience.service';
+import { defaultPolicy } from '../services/resilience.service';
 
 /**
  * Retry / circuit-break /api/v1 calls (5xx and network errors only).

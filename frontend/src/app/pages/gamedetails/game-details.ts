@@ -12,7 +12,7 @@ import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
 import { map } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { GameDetailsStore } from '../../services/game-details.store';
+import { GameDetailsStore } from '../../stores/game-details.store';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import { PageMeta } from '../../seo/page-meta';
 

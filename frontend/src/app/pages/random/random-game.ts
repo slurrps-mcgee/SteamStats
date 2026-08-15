@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import type { OwnedGame } from '../../interfaces/api';
 import { Api } from '../../api/generated/api';
 import { getRandomGame } from '../../api/generated/functions';
-import { SteamSessionService } from '../../services/steam-session.service';
+import { SteamSessionStore } from '../../stores/steam-session.store';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import { PlaytimePipe } from '../../pipes/playtime.pipe';
 import { steamHeaderCandidates } from '../../utils/steam-artwork';
@@ -26,7 +26,7 @@ import { steamHeaderCandidates } from '../../utils/steam-artwork';
 })
 export class RandomGame {
   private readonly api = inject(Api);
-  protected readonly session = inject(SteamSessionService);
+  protected readonly session = inject(SteamSessionStore);
 
   protected readonly game = signal<OwnedGame | null>(null);
   protected readonly loading = signal(false);

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import type { OwnedGame } from '../../interfaces/api';
-import { SteamSessionService } from '../../services/steam-session.service';
+import { SteamSessionStore } from '../../stores/steam-session.store';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import { PlaytimePipe } from '../../pipes/playtime.pipe';
 
@@ -14,7 +14,7 @@ const TOP_GAMES_COUNT = 8;
   templateUrl: './statistics.html',
 })
 export class Statistics {
-  protected readonly session = inject(SteamSessionService);
+  protected readonly session = inject(SteamSessionStore);
 
   private readonly games = computed(() => this.session.library()?.games ?? []);
 

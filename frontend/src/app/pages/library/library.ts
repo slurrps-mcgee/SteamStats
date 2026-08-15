@@ -4,7 +4,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { SteamSessionService } from '../../services/steam-session.service';
+import { SteamSessionStore } from '../../stores/steam-session.store';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import { GameCard } from '../../components/game-card/game-card';
 
@@ -18,7 +18,7 @@ type SortBy = 'playtime' | 'name' | 'recent';
   templateUrl: './library.html',
 })
 export class Library {
-  protected readonly session = inject(SteamSessionService);
+  protected readonly session = inject(SteamSessionStore);
 
   protected readonly filterControl = new FormControl('', { nonNullable: true });
   protected readonly sortControl = new FormControl<SortBy>('playtime', { nonNullable: true });

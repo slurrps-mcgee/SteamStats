@@ -21,7 +21,7 @@ const STORAGE_KEY = 'steamstats.steamId';
  * Game catalog details belong in GameDetailsStore, not here.
  */
 @Injectable({ providedIn: 'root' })
-export class SteamSessionService {
+export class SteamSessionStore {
   constructor() {
     this.restoreSession();
   }

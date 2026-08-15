@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import type { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
-import { isAbortedError } from '../api/resilience.service';
+import { isAbortedError } from '../services/resilience.service';
 import { NotificationService } from '../services/notification.service';
 
 /**

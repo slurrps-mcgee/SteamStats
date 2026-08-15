@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { SteamSessionService } from '../../services/steam-session.service';
+import { SteamSessionStore } from '../../stores/steam-session.store';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import { GameCard } from '../../components/game-card/game-card';
 import { StatCard } from '../../components/stat-card/stat-card';
@@ -29,7 +29,7 @@ import { ProfileSummary } from '../../components/profile/profile-summary/profile
   templateUrl: './dashboard.html',
 })
 export class Dashboard {
-  protected readonly session = inject(SteamSessionService);
+  protected readonly session = inject(SteamSessionStore);
 
   /** Games with recent playtime, derived from the cached library. */
   protected readonly recentGames = computed(() => {
