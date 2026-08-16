@@ -17,6 +17,7 @@ function isPersistedEntry(value: unknown): value is PersistedEntry {
 
 class CacheService {
   private readonly cache: LRUCache<string, any>;
+  private readonly inflight = new Map<string, Promise<unknown>>();
 
   private readonly filePath = path.join(process.cwd(), 'cache.json');
 
@@ -81,22 +82,28 @@ class CacheService {
     console.log(`Saved ${Object.keys(entries).length} cached entries`);
   }
 
-  async remember<T>(
-    key: string,
-    ttl: number | undefined,
-    loader: () => Promise<T>,
-  ): Promise<T> {
+  async remember<T>(key: string, ttl: number | undefined, loader: () => Promise<T>): Promise<T> {
     const cached = this.cache.get(key);
 
     if (cached !== undefined) {
       return cached as T;
     }
 
-    const value = await loader();
+    const pending = this.inflight.get(key);
+    if (pending) {
+      return pending as Promise<T>;
+    }
 
-    this.cache.set(key, value, ttl ? { ttl } : { ttl: Infinity });
+    const request = (async () => {
+      const value = await loader();
+      this.cache.set(key, value, ttl ? { ttl } : { ttl: Infinity });
+      return value;
+    })().finally(() => {
+      this.inflight.delete(key);
+    });
 
-    return value;
+    this.inflight.set(key, request);
+    return request as Promise<T>;
   }
 
   get<T>(key: string): T | undefined {

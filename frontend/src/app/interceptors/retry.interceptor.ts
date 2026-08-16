@@ -14,9 +14,5 @@ export const retryInterceptor: HttpInterceptorFn = (request, next) => {
     return next(request);
   }
 
-  return defer(() =>
-    from(
-      defaultPolicy.execute(() => lastValueFrom(next(request.clone()))),
-    ),
-  );
+  return defer(() => from(defaultPolicy.execute(() => lastValueFrom(next(request.clone())))));
 };

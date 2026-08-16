@@ -37,7 +37,8 @@ frontend/
 │       ├── interfaces/          # re-exports of generated model names
 │       ├── components/
 │       ├── pages/
-│       ├── services/            # SteamSessionService, GameDetailsStore
+│       ├── stores/              # SteamSessionStore, GameDetailsStore
+│       ├── services/            # NotificationService, resilience
 │       ├── interceptors/
 │       ├── seo/                 # TitleStrategy + Meta/canonical
 │       └── utils/
@@ -75,14 +76,14 @@ The SPA targets [WCAG 2.2](https://www.w3.org/WAI/standards-guidelines/wcag/) **
 
 SEO stays **client-side**. `index.html` has default description, robots, Open Graph, Twitter, JSON-LD, and a web app manifest. Per-route titles and descriptions are applied by `SteamStatsTitleStrategy` from `title` / `data.description` on [`app.routes.ts`](src/app/app.routes.ts). Game details set `SteamStats — {{ name }}` after the store loads. There is no Angular Universal / prerender in this pass, so crawlers that do not run JavaScript still see the thin `index.html` shell.
 
-[`src/robots.txt`](src/robots.txt) and [`src/sitemap.xml`](src/sitemap.xml) are copied into the build. Before a public deploy, replace the `https://example.com` origin in both files with your real host.
+[`src/robots.txt`](src/robots.txt) and [`src/sitemap.xml`](src/sitemap.xml) are copied into the build and use `https://steamstats.quantumcode.dev`.
 
 ---
 
 ## Data flow
 
 ```text
-Page  →  SteamSessionService / GameDetailsStore
+Page  →  SteamSessionStore / GameDetailsStore
               →  generated Api.invoke(getProfile | getLibrary | …)
                     →  HttpClient  →  /api/v1/...
 ```
@@ -108,10 +109,10 @@ Short names (`OwnedGame`, `SteamProfile`) are re-exported from [`interfaces/api.
 
 Cockatiel retries (5xx / network only; not aborted requests) run in [`retry.interceptor.ts`](src/app/interceptors/retry.interceptor.ts).
 
-- [`SteamSessionService`](src/app/services/steam-session.service.ts) — active Steam ID, profile, library
-- [`GameDetailsStore`](src/app/services/game-details.store.ts) — Store details with a short local cache
+- [`SteamSessionStore`](src/app/stores/steam-session.store.ts) — active Steam ID, profile, library
+- [`GameDetailsStore`](src/app/stores/game-details.store.ts) — Store details plus compact header/genre hints
 
-Library card art uses [`steam-artwork.ts`](src/app/utils/steam-artwork.ts) (CDN fallbacks). Hashed `header.jpg` URLs for some new titles only appear on game details (`header_image` from Store `appdetails`).
+Library card art uses [`steam-artwork.ts`](src/app/utils/steam-artwork.ts) (CDN fallbacks, then `headerImage` from Store when a title has been opened or filled from Statistics).
 
 ---
 

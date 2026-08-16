@@ -31,10 +31,9 @@ export class GameDetails {
   private readonly pageMeta = inject(PageMeta);
   protected readonly store = inject(GameDetailsStore);
 
-  private readonly appId = toSignal(
-    this.route.paramMap.pipe(map((params) => params.get('id'))),
-    { initialValue: this.route.snapshot.paramMap.get('id') },
-  );
+  private readonly appId = toSignal(this.route.paramMap.pipe(map((params) => params.get('id'))), {
+    initialValue: this.route.snapshot.paramMap.get('id'),
+  });
 
   protected readonly selectedScreenshot = signal<string | null>(null);
   protected readonly aboutExpanded = signal(false);

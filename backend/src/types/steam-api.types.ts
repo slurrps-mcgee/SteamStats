@@ -20,7 +20,6 @@ export interface SteamAppListResponse {
   };
 }
 
-
 export interface SteamAppDetailsResponse {
   [appId: string]: {
     success: boolean;
@@ -38,7 +37,6 @@ export interface SteamAppDetailsResponse {
   };
 }
 
-
 export interface SteamResolveVanityUrlResponse {
   response: {
     success: number;
@@ -46,7 +44,6 @@ export interface SteamResolveVanityUrlResponse {
     message?: string;
   };
 }
-
 
 export interface SteamPlayerSummary {
   steamid: string;
@@ -62,13 +59,11 @@ export interface SteamPlayerSummary {
   loccountrycode?: string;
 }
 
-
 export interface SteamPlayerSummariesResponse {
   response: {
     players: SteamPlayerSummary[];
   };
 }
-
 
 export interface SteamOwnedGame {
   appid: number;
@@ -79,14 +74,12 @@ export interface SteamOwnedGame {
   rtime_last_played?: number;
 }
 
-
 export interface SteamOwnedGamesResponse {
   response: {
     game_count?: number;
     games?: SteamOwnedGame[];
   };
 }
-
 
 export interface SteamRecentlyPlayedGamesResponse {
   response: {
@@ -95,13 +88,11 @@ export interface SteamRecentlyPlayedGamesResponse {
   };
 }
 
-
 export interface SteamWishlistGame {
   appid: number;
   priority?: number;
   date_added?: number;
 }
-
 
 export interface SteamWishlistResponse {
   response: {

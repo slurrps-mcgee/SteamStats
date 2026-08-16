@@ -11,7 +11,7 @@ import { ProfileSummary } from '../../components/profile/profile-summary/profile
 /**
  * Main dashboard page.
  *
- * Dashboard state is owned by SteamSessionService so data survives
+ * Dashboard state is owned by SteamSessionStore so data survives
  * navigation and can be restored after browser refresh.
  */
 @Component({

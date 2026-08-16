@@ -21,15 +21,12 @@ export class SteamApiError extends Error {
  * Thrown when Steam Store API fails.
  */
 export class SteamStoreApiError extends Error {
-
   constructor(
     message: string,
     public readonly statusCode = 502,
   ) {
-
     super(message);
 
-    this.name =
-      'SteamStoreApiError';
+    this.name = 'SteamStoreApiError';
   }
 }

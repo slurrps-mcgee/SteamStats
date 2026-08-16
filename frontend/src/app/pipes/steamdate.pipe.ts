@@ -5,7 +5,6 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true,
 })
 export class SteamDatePipe implements PipeTransform {
-
   transform(value: number | string | null | undefined): Date | null {
     if (value === null || value === undefined || value === '') {
       return null;

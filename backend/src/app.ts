@@ -1,8 +1,5 @@
 import Fastify, { type FastifyInstance, type FastifyError } from 'fastify';
-import {
-  TypeBoxValidatorCompiler,
-  type TypeBoxTypeProvider,
-} from '@fastify/type-provider-typebox';
+import { TypeBoxValidatorCompiler, type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import sensible from '@fastify/sensible';
 import type { AppConfig } from './config/env';
 import { configPlugin } from './plugins/config.plugin';

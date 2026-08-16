@@ -9,7 +9,6 @@ import { RouterLink } from '@angular/router';
   host: { class: 'block w-full shrink-0 self-stretch' },
 })
 export class Footer {
-  protected readonly licenseUrl =
-    'https://github.com/slurrps-mcgee/SteamStats/blob/main/LICENSE';
+  protected readonly licenseUrl = 'https://github.com/slurrps-mcgee/SteamStats/blob/main/LICENSE';
   protected readonly githubUrl = 'https://github.com/slurrps-mcgee/SteamStats';
 }

@@ -2,9 +2,7 @@
   <h1 class="w-full text-2xl font-semibold text-white">Random Game</h1>
 
   @if (!session.hasActiveProfile()) {
-    <div class="ss-panel-muted w-full">
-      Search for a Steam profile on the Dashboard first.
-    </div>
+    <div class="ss-panel-muted w-full">Search for a Steam profile on the Dashboard first.</div>
   } @else if (loading()) {
     <app-loading-spinner label="Picking a game..." />
   } @else if (game(); as g) {

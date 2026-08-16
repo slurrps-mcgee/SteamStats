@@ -6,7 +6,6 @@ async function main(): Promise<void> {
   const app = buildApp(config);
 
   try {
-
     await app.listen({
       host: config.host,
       port: config.port,
@@ -18,21 +17,13 @@ async function main(): Promise<void> {
       process.exit(0);
     };
 
-    process.on(
-      'SIGINT',
-      shutdown,
-    );
+    process.on('SIGINT', shutdown);
 
-    process.on(
-      'SIGTERM',
-      shutdown,
-    );
-
+    process.on('SIGTERM', shutdown);
   } catch (error) {
     app.log.error(error);
     process.exit(1);
   }
-
 }
 
 void main();

@@ -1,24 +1,17 @@
-import type {
-  SteamProfile,
-  SteamPersonaState,
-} from '../../../schemas/profile.schema';
+import type { SteamProfile, SteamPersonaState } from '../../../schemas/profile.schema';
 
 import { ApiClient } from '../api.client';
-import type { SteamPlayerSummariesResponse, SteamResolveVanityUrlResponse } from '../../../types/steam-api.types';
+import type {
+  SteamPlayerSummariesResponse,
+  SteamResolveVanityUrlResponse,
+} from '../../../types/steam-api.types';
 
-import {
-  isSteamId64,
-  parseSteamInput,
-} from '../../../utils/steam-id.util';
+import { isSteamId64, parseSteamInput } from '../../../utils/steam-id.util';
 
 import type CacheService from '../../cache.service';
 import { SteamNotFoundError } from '../../../types/error.types';
 
-
-function normalizePersonaState(
-  state: number,
-): SteamPersonaState {
-
+function normalizePersonaState(state: number): SteamPersonaState {
   switch (state) {
     case 0:
     case 1:
@@ -34,117 +27,72 @@ function normalizePersonaState(
   }
 }
 
-
 export class SteamUserService {
-
   constructor(
     private readonly client: ApiClient,
     private readonly cache: CacheService,
   ) {}
 
-
-  async resolveSteamId(
-    rawInput: string,
-  ): Promise<string> {
-
+  async resolveSteamId(rawInput: string): Promise<string> {
     return this.cache.remember(
       `resolve:${rawInput}`,
       1000 * 60 * 60 * 24, // 1 day
       async () => {
-
-        const parsed =
-          parseSteamInput(rawInput);
-
+        const parsed = parseSteamInput(rawInput);
 
         if (parsed.kind === 'steamId64') {
           return parsed.value;
         }
 
+        const result = await this.client.request<SteamResolveVanityUrlResponse>({
+          host: 'web',
+          path: '/ISteamUser/ResolveVanityURL/v1/',
+          params: { vanityurl: parsed.value },
+        });
 
-        const result =
-          await this.client.request<SteamResolveVanityUrlResponse>({
-            host: 'web',
-            path: '/ISteamUser/ResolveVanityURL/v1/',
-            params: { vanityurl: parsed.value },
-          });
-
-
-        if (
-          result.response.success !== 1 ||
-          !result.response.steamid
-        ) {
-          throw new SteamNotFoundError(
-            `Could not resolve ${rawInput}`,
-          );
+        if (result.response.success !== 1 || !result.response.steamid) {
+          throw new SteamNotFoundError(`Could not resolve ${rawInput}`);
         }
-
 
         return result.response.steamid;
       },
     );
   }
 
-
-
-  async getProfile(
-    steamId64: string,
-  ): Promise<SteamProfile> {
-
-
+  async getProfile(steamId64: string): Promise<SteamProfile> {
     if (!isSteamId64(steamId64)) {
-      throw new SteamNotFoundError(
-        'Invalid Steam ID',
-      );
+      throw new SteamNotFoundError('Invalid Steam ID');
     }
 
+    return this.cache.remember(`profile:${steamId64}`, 1000 * 60 * 15, async () => {
+      const result = await this.client.request<SteamPlayerSummariesResponse>({
+        host: 'web',
+        path: '/ISteamUser/GetPlayerSummaries/v2/',
+        params: { steamids: steamId64 },
+      });
 
-    return this.cache.remember(
-      `profile:${steamId64}`,
-      1000 * 60 * 15,
-      async () => {
+      const player = result.response.players[0];
 
-        const result =
-          await this.client.request<SteamPlayerSummariesResponse>({
-            host: 'web',
-            path: '/ISteamUser/GetPlayerSummaries/v2/',
-            params: { steamids: steamId64 },
-          });
+      if (!player) {
+        throw new SteamNotFoundError('Profile not found');
+      }
 
+      return {
+        steamId: player.steamid,
+        personaName: player.personaname,
+        profileUrl: player.profileurl,
+        avatar: player.avatar,
+        avatarMedium: player.avatarmedium,
+        avatarFull: player.avatarfull,
 
-        const player =
-          result.response.players[0];
+        personaState: normalizePersonaState(player.personastate),
 
+        visibility: player.communityvisibilitystate === 3 ? 'public' : 'private',
 
-        if (!player) {
-          throw new SteamNotFoundError(
-            'Profile not found',
-          );
-        }
-
-
-        return {
-          steamId: player.steamid,
-          personaName: player.personaname,
-          profileUrl: player.profileurl,
-          avatar: player.avatar,
-          avatarMedium: player.avatarmedium,
-          avatarFull: player.avatarfull,
-
-          personaState:
-            normalizePersonaState(
-              player.personastate,
-            ),
-
-          visibility:
-            player.communityvisibilitystate === 3
-              ? 'public'
-              : 'private',
-
-          lastLogoffAt: player.lastlogoff,
-          createdAt: player.timecreated,
-          countryCode: player.loccountrycode,
-        };
-      },
-    );
+        lastLogoffAt: player.lastlogoff,
+        createdAt: player.timecreated,
+        countryCode: player.loccountrycode,
+      };
+    });
   }
 }

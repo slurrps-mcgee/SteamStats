@@ -39,7 +39,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        file: ./backend/Dockerfile
+        file: ./backend/dockerfile
         push: true
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/steamstats-backend:${{ env.BACKEND_VERSION }}
@@ -49,7 +49,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        file: ./frontend/Dockerfile
+        file: ./frontend/dockerfile
         push: true
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/steamstats-frontend:${{ env.FRONTEND_VERSION }}

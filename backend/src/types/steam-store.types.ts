@@ -5,7 +5,6 @@ export interface SteamGameDetailsResponse {
   };
 }
 
-
 export interface SteamStoreGameData {
   type: string;
   name: string;

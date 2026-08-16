@@ -6,120 +6,106 @@ import { ApiClient } from '../api.client';
 import { SteamStoreApiError } from '../../../types/error.types';
 import type { SteamGameDetailsResponse } from '../../../types/steam-store.types';
 
-
 export class SteamGameService {
-    constructor(
-        private readonly client: ApiClient,
-        private readonly cache: CacheService,
-    ) { }
+  constructor(
+    private readonly client: ApiClient,
+    private readonly cache: CacheService,
+  ) {}
 
-    async getGameDetails(
-        appId: number,
-    ): Promise<SteamGameDetails> {
-        return this.cache.remember(
-            `game:${appId}`,
-            1000 * 60 * 60 * 24 * 2, // 2 days
-            async () => {
-                const response =
-                    await this.client.request<SteamGameDetailsResponse>({
-                        host: 'store',
-                        path: '/api/appdetails',
-                        params: { appids: appId },
-                    });
+  async getGameDetails(appId: number): Promise<SteamGameDetails> {
+    return this.cache.remember(
+      `game:${appId}`,
+      1000 * 60 * 60 * 24 * 2, // 2 days
+      async () => {
+        const response = await this.client.request<SteamGameDetailsResponse>({
+          host: 'store',
+          path: '/api/appdetails',
+          params: { appids: appId },
+        });
 
-                const app = response[appId]?.data;
+        const app = response[appId]?.data;
 
-                if (!app) {
-                    throw new SteamStoreApiError(
-                        `Steam game ${appId} not found`,
-                        404,
-                    );
-                }
+        if (!app) {
+          throw new SteamStoreApiError(`Steam game ${appId} not found`, 404);
+        }
 
-                return this.mapGameDetails(app);
-            },
-        );
-    }
+        return this.mapGameDetails(app);
+      },
+    );
+  }
 
+  private mapGameDetails(game: SteamStoreGameData): SteamGameDetails {
+    return {
+      appId: game.steam_appid,
+      name: game.name,
+      isFree: game.is_free,
+      requiredAge: game.required_age,
+      controllerSupport: game.controller_support ?? undefined,
+      headerImage: game.header_image,
+      capsuleImage: game.capsule_image,
+      shortDescription: game.about_the_game,
+      description: game.detailed_description,
+      developers: game.developers ?? [],
+      publishers: game.publishers ?? [],
+      requirements: game.requirements
+        ? {
+            minimum: game.requirements.minimum,
+            recommended: game.requirements.recommended,
+          }
+        : undefined,
 
-    private mapGameDetails(
-        game: SteamStoreGameData,
-    ): SteamGameDetails {
+      releaseDate: {
+        comingSoon: game.release_date.coming_soon,
+        date: game.release_date.date,
+      },
 
-        return {
-            appId: game.steam_appid,
-            name: game.name,
-            isFree: game.is_free,
-            requiredAge: game.required_age,
-            controllerSupport: game.controller_support ?? undefined,
-            headerImage: game.header_image,
-            capsuleImage: game.capsule_image,
-            shortDescription: game.about_the_game,
-            description: game.detailed_description,
-            developers: game.developers ?? [],
-            publishers: game.publishers ?? [],
-            requirements: game.requirements
-                ? {
-                    minimum: game.requirements.minimum,
-                    recommended: game.requirements.recommended,
-                }
-                : undefined,
+      metacritic: game.metacritic
+        ? {
+            score: game.metacritic.score,
+            url: game.metacritic.url,
+          }
+        : undefined,
 
-            releaseDate: {
-                comingSoon: game.release_date.coming_soon,
-                date: game.release_date.date,
-            },
+      price: game.price_overview
+        ? {
+            currency: game.price_overview.currency,
+            initial: game.price_overview.initial,
+            final: game.price_overview.final,
+            discountPercent: game.price_overview.discount_percent,
+            initialFormatted: game.price_overview.initial_formatted,
+            finalFormatted: game.price_overview.final_formatted,
+          }
+        : undefined,
 
-            metacritic: game.metacritic
-                ? {
-                    score: game.metacritic.score,
-                    url: game.metacritic.url,
-                }
-                : undefined,
+      platforms: {
+        windows: game.platforms.windows,
+        mac: game.platforms.mac,
+        linux: game.platforms.linux,
+      },
 
-            price: game.price_overview
-                ? {
-                    currency: game.price_overview.currency,
-                    initial: game.price_overview.initial,
-                    final: game.price_overview.final,
-                    discountPercent:
-                        game.price_overview.discount_percent,
-                    initialFormatted:
-                        game.price_overview.initial_formatted,
-                    finalFormatted:
-                        game.price_overview.final_formatted,
-                }
-                : undefined,
+      genres: game.genres ?? [],
 
-            platforms: {
-                windows: game.platforms.windows,
-                mac: game.platforms.mac,
-                linux: game.platforms.linux,
-            },
+      categories:
+        game.categories?.map((category) => ({
+          id: category.id,
+          description: category.description,
+        })) ?? [],
 
-            genres: game.genres ?? [],
+      screenshots:
+        game.screenshots?.map((screenshot) => ({
+          id: screenshot.id,
+          thumbnail: screenshot.path_thumbnail,
+          full: screenshot.path_full,
+        })) ?? [],
 
-            categories:
-                game.categories?.map((category) => ({
-                    id: category.id,
-                    description: category.description,
-                })) ?? [],
+      achievements: game.achievements
+        ? {
+            total: game.achievements.total,
+            highlighted: game.achievements.highlighted,
+          }
+        : undefined,
 
-            screenshots:
-                game.screenshots?.map((screenshot) => ({
-                    id: screenshot.id,
-                    thumbnail: screenshot.path_thumbnail,
-                    full: screenshot.path_full,
-                })) ?? [],
-
-            achievements: game.achievements
-                ? {
-                    total: game.achievements.total,
-                    highlighted: game.achievements.highlighted,
-                }
-                : undefined,
-
-            website: game.website,
-        };
-    }
+      website: game.website,
+    };
+  }
 }

@@ -16,6 +16,7 @@ import { SteamSessionStore } from '../../stores/steam-session.store';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import { PlaytimePipe } from '../../pipes/playtime.pipe';
 import { steamHeaderCandidates } from '../../utils/steam-artwork';
+import { GameDetailsStore } from '../../stores/game-details.store';
 
 /** Picks and displays a random game from the player's library. */
 @Component({
@@ -26,24 +27,27 @@ import { steamHeaderCandidates } from '../../utils/steam-artwork';
 })
 export class RandomGame {
   private readonly api = inject(Api);
+  private readonly catalog = inject(GameDetailsStore);
   protected readonly session = inject(SteamSessionStore);
 
   protected readonly game = signal<OwnedGame | null>(null);
   protected readonly loading = signal(false);
 
   private readonly candidates = computed(() => {
+    this.catalog.hintsRevision();
     const game = this.game();
-    return game ? steamHeaderCandidates(game.appId) : [];
+    if (!game) {
+      return [];
+    }
+    return steamHeaderCandidates(game.appId, this.catalog.peekHint(game.appId)?.headerImage);
   });
 
   private readonly srcIndex = linkedSignal({
-    source: () => this.game()?.appId ?? 0,
+    source: () => `${this.game()?.appId ?? 0}:${this.candidates()[0] ?? ''}`,
     computation: () => 0,
   });
 
-  protected readonly headerSrc = computed(
-    () => this.candidates()[this.srcIndex()] ?? '',
-  );
+  protected readonly headerSrc = computed(() => this.candidates()[this.srcIndex()] ?? '');
 
   onImageError(event: Event): void {
     const next = this.srcIndex() + 1;

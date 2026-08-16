@@ -8,8 +8,7 @@ const PROFILES_URL_REGEX = /steamcommunity\.com\/profiles\/(\d+)/i;
 const VANITY_URL_REGEX = /steamcommunity\.com\/id\/([^/?#]+)/i;
 
 export type ParsedSteamInput =
-  | { kind: 'steamId64'; value: string }
-  | { kind: 'vanity'; value: string };
+  { kind: 'steamId64'; value: string } | { kind: 'vanity'; value: string };
 
 /** Returns true if the given string is a syntactically valid SteamID64. */
 export function isSteamId64(value: string): boolean {

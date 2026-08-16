@@ -6,7 +6,8 @@ export const routes: Routes = [
     path: 'dashboard',
     title: 'Dashboard',
     data: {
-      description: 'Look up a public Steam profile and see library stats, recently played games, and playtime.',
+      description:
+        'Look up a public Steam profile and see library stats, recently played games, and playtime.',
     },
     loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
   },
@@ -54,7 +55,8 @@ export const routes: Routes = [
     path: 'privacy',
     title: 'Privacy Policy',
     data: {
-      description: 'How Steam Stats handles Steam identifiers, public profile data, and local session storage.',
+      description:
+        'How Steam Stats handles Steam identifiers, public profile data, and local session storage.',
     },
     loadComponent: () => import('./pages/privacy/privacy').then((m) => m.Privacy),
   },
@@ -62,7 +64,8 @@ export const routes: Routes = [
     path: 'terms',
     title: 'Terms and Conditions',
     data: {
-      description: 'Terms for using Steam Stats, including Steam API usage and the open-source license.',
+      description:
+        'Terms for using Steam Stats, including Steam API usage and the open-source license.',
     },
     loadComponent: () => import('./pages/terms/terms').then((m) => m.Terms),
   },

@@ -1,14 +1,6 @@
-import {
-  Injectable,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 
-import type {
-  SteamProfile,
-  LibraryResponse,
-} from '../interfaces/api';
+import type { SteamProfile, LibraryResponse } from '../interfaces/api';
 
 import { Api } from '../api/generated/api';
 import { getLibrary, getProfile, resolveSteamId } from '../api/generated/functions';
@@ -49,9 +41,7 @@ export class SteamSessionStore {
   readonly libraryLoading = this.libraryLoadingSignal.asReadonly();
   readonly error = this.errorSignal.asReadonly();
 
-  readonly loading = computed(
-    () => this.profileLoadingSignal() || this.libraryLoadingSignal(),
-  );
+  readonly loading = computed(() => this.profileLoadingSignal() || this.libraryLoadingSignal());
 
   readonly hasActiveProfile = computed(() => this.steamIdSignal() !== null);
 

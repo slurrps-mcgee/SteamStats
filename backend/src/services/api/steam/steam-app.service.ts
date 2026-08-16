@@ -1,8 +1,5 @@
 import { ApiClient } from '../api.client';
-import type {
-  SteamAppList,
-  SteamAppListResponse,
-} from '../../../types/steam-api.types';
+import type { SteamAppList, SteamAppListResponse } from '../../../types/steam-api.types';
 
 import type CacheService from '../../cache.service';
 

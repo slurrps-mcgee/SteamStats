@@ -43,10 +43,7 @@ export function isRetriableError(err: unknown): boolean {
   };
 
   const status: number | undefined =
-    anyErr?.status ??
-    anyErr?.statusCode ??
-    anyErr?.response?.status ??
-    anyErr?.error?.status;
+    anyErr?.status ?? anyErr?.statusCode ?? anyErr?.response?.status ?? anyErr?.error?.status;
 
   if (typeof status === 'number') {
     if (status === 0) {

@@ -17,11 +17,17 @@ import { MatInputModule } from '@angular/material/input';
 @Component({
   selector: 'app-search-bar',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule],
+  imports: [
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+  ],
   templateUrl: './search-bar.html',
 })
 export class SearchBar {
-  readonly search = output<string>();
+  readonly lookup = output<string>();
 
   readonly control = new FormControl('', {
     nonNullable: true,
@@ -34,6 +40,6 @@ export class SearchBar {
     if (value.length === 0) {
       return;
     }
-    this.search.emit(value);
+    this.lookup.emit(value);
   }
 }

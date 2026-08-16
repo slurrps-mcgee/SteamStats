@@ -2,9 +2,7 @@
   <h1 class="text-2xl font-semibold text-white">Statistics</h1>
 
   @if (!session.hasActiveProfile()) {
-    <div class="ss-panel-muted">
-      Search for a Steam profile on the Dashboard first.
-    </div>
+    <div class="ss-panel-muted">Search for a Steam profile on the Dashboard first.</div>
   } @else if (loading()) {
     <app-loading-spinner label="Crunching stats..." />
   } @else {
@@ -14,11 +12,18 @@
         <div class="flex flex-col gap-3">
           @for (game of topGames(); track game.appId) {
             <div class="flex items-center gap-3">
-              <span class="w-40 truncate text-sm text-slate-300" [title]="game.name">{{ game.name }}</span>
+              <span class="w-40 truncate text-sm text-slate-300" [title]="game.name">{{
+                game.name
+              }}</span>
               <div class="h-3 flex-1 overflow-hidden rounded-full bg-steam-accent/40">
-                <div class="h-full rounded-full bg-steam-primary" [style.width]="barWidth(game)"></div>
+                <div
+                  class="h-full rounded-full bg-steam-primary"
+                  [style.width]="barWidth(game)"
+                ></div>
               </div>
-              <span class="w-16 text-right text-xs text-slate-400">{{ game.playtimeForeverMinutes | playtime }}</span>
+              <span class="w-16 text-right text-xs text-slate-400">{{
+                game.playtimeForeverMinutes | playtime
+              }}</span>
             </div>
           }
         </div>
@@ -27,8 +32,30 @@
       }
     </div>
 
-    <div class="ss-panel-muted p-8">
-      Library by genre - coming soon.
+    <div class="ss-panel">
+      <h2 class="mb-4 text-lg font-semibold text-white">Playtime by platform</h2>
+      @if (platformBars().length > 0) {
+        <div class="flex flex-col gap-3">
+          @for (bar of platformBars(); track bar.label) {
+            <div class="flex items-center gap-3">
+              <span class="w-40 truncate text-sm text-slate-300">{{ bar.label }}</span>
+              <div class="h-3 flex-1 overflow-hidden rounded-full bg-steam-accent/40">
+                <div
+                  class="h-full rounded-full bg-steam-primary"
+                  [style.width]="statBarWidth(bar.minutes, maxPlatformMinutes())"
+                ></div>
+              </div>
+              <span class="w-16 text-right text-xs text-slate-400">{{
+                bar.minutes | playtime
+              }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="text-sm text-slate-400">
+          Platform split appears for games you have opened (Store details).
+        </p>
+      }
     </div>
   }
 </div>

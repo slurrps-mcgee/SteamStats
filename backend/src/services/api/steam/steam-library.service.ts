@@ -62,9 +62,7 @@ export class SteamLibraryService {
         0,
       );
 
-      const recentlyPlayedCount = games.filter(
-        (game) => game.playtimeRecentMinutes > 0,
-      ).length;
+      const recentlyPlayedCount = games.filter((game) => game.playtimeRecentMinutes > 0).length;
 
       return {
         games,
