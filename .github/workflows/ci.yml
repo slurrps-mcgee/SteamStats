@@ -3,18 +3,38 @@ name: CI
 on:
   pull_request:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  lint:
+  backend:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: steamstats/backend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: steamstats/backend/package-lock.json
       - run: npm ci
-      - run: npm run lint
-      - run: npm run format:check
+      - run: npm audit --audit-level=high
+      - run: npx tsc --noEmit
+      - run: npm test
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: steamstats/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: steamstats/frontend/package-lock.json
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npx tsc -p tsconfig.app.json --noEmit
