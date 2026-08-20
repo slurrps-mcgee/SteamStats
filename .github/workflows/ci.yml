@@ -34,3 +34,14 @@ jobs:
 
       - name: Typecheck frontend
         run: npx tsc -p frontend/tsconfig.app.json --noEmit
+
+      - name: Check OpenAPI artifacts are up to date
+        run: |
+          npm run generate:api
+          git diff --exit-code -- frontend/src/app/api/openapi.json frontend/src/app/api/generated/
+
+      - name: Build backend
+        run: npm run build --workspace=backend
+
+      - name: Build frontend (production)
+        run: npm run build --workspace=frontend -- --configuration production

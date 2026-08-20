@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "generate:api": "npm run dump:openapi --workspace=backend && npm run generate:api --workspace=frontend",
+    "check:openapi": "npm run generate:api && git diff --exit-code -- frontend/src/app/api/openapi.json frontend/src/app/api/generated/",
     "dev:backend": "npm run dev --workspace=backend",
     "dev:frontend": "npm run start --workspace=frontend",
     "build:backend": "npm run build --workspace=backend",
