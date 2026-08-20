@@ -32,6 +32,9 @@ jobs:
       - name: Typecheck backend
         run: npm run typecheck --workspace=backend
 
+      - name: Test backend
+        run: npm run test:coverage --workspace=backend
+
       - name: Typecheck frontend
         run: npx tsc -p frontend/tsconfig.app.json --noEmit
 
