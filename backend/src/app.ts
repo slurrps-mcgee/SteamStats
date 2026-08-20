@@ -16,9 +16,12 @@ import helmetPlugin from './plugins/helmet.plugin';
 /** Builds (but does not start) a fully configured Fastify instance. */
 export function buildApp(config: AppConfig): FastifyInstance {
   const fastify = Fastify({
-    logger: {
-      level: config.nodeEnv === 'production' ? 'info' : 'debug',
-    },
+    logger:
+      config.nodeEnv === 'test'
+        ? false
+        : {
+            level: config.nodeEnv === 'production' ? 'info' : 'debug',
+          },
   })
     .setValidatorCompiler(TypeBoxValidatorCompiler)
     .withTypeProvider<TypeBoxTypeProvider>();
