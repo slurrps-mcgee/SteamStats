@@ -38,6 +38,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - /app/frontend/node_modules
       - /app/frontend/.angular
     entrypoint: ["/bin/sh", "/app/scripts/docker-entrypoint.dev.sh"]
     command:
