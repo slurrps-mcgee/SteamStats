@@ -88,9 +88,9 @@ Responses that can be reused go through [`cache.service.ts`](src/services/cache.
 | GET | `/library/:steamId` | `steam.library.getLibrary` |
 | GET | `/library/:steamId/random` | `steam.library.getRandomGame` |
 | GET | `/library/:steamId/recent` | `steam.library.getRecentlyPlayedGames` |
-| GET | `/library/refresh` | `steam.apps.refreshApps` |
+| GET | `/library/refresh` | `steam.apps.refreshApps` (`X-Admin-Key`) |
 | GET | `/games/:appId` | `steam.games.getGameDetails` |
-| GET | `/cache/clear` | cache clear |
+| GET | `/cache/clear` | cache clear (`X-Admin-Key`) |
 
 Body for resolve: `{ "input": "<SteamID64 | profile URL | vanity>" }`.
 
@@ -113,6 +113,7 @@ Loaded from the repo-root `.env` (see [`.env.example`](../.env.example)):
 | -------- | -------- |
 | `STEAM_API_KEY` | Steam Web API (`ApiClient` host `web`) |
 | `FRONTEND_ORIGIN` | CORS allowlist |
+| `ADMIN_API_KEY` | `X-Admin-Key` for `/cache/clear` and `/library/refresh` (404 in production if unset) |
 | `RATE_LIMIT_MAX` / `RATE_LIMIT_WINDOW_MS` | Global rate limit |
 
 Store `appdetails` does not use the Web API key.

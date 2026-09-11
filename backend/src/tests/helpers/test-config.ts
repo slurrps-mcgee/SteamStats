@@ -6,6 +6,7 @@ export const testConfig: AppConfig = {
   port: 0,
   steamApiKey: 'test-steam-api-key',
   frontendOrigin: 'http://localhost:4200',
+  adminApiKey: 'test-admin-key',
   rateLimit: {
     max: 1000,
     timeWindowMs: 60_000,

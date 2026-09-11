@@ -158,6 +158,7 @@ describe('API routes', () => {
     const response = await app.inject({
       method: 'GET',
       url: '/api/v1/library/refresh',
+      headers: { 'x-admin-key': testConfig.adminApiKey },
     });
 
     expect(response.statusCode).toBe(200);
@@ -185,6 +186,7 @@ describe('API routes', () => {
     const response = await app.inject({
       method: 'GET',
       url: '/api/v1/cache/clear',
+      headers: { 'x-admin-key': testConfig.adminApiKey },
     });
 
     expect(response.statusCode).toBe(200);
@@ -192,5 +194,45 @@ describe('API routes', () => {
       message: 'Cache cleared successfully',
       status: 200,
     });
+  });
+
+  it('GET /api/v1/cache/clear returns 401 without an admin key', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/v1/cache/clear',
+    });
+
+    expect(response.statusCode).toBe(401);
+    expect(response.json()).toMatchObject({ statusCode: 401, error: 'Unauthorized' });
+  });
+
+  it('GET /api/v1/library/refresh returns 401 with a wrong admin key', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/v1/library/refresh',
+      headers: { 'x-admin-key': 'wrong-key' },
+    });
+
+    expect(response.statusCode).toBe(401);
+  });
+
+  it('GET /api/v1/cache/clear returns 404 in production when ADMIN_API_KEY is unset', async () => {
+    const prodApp = buildApp({
+      ...testConfig,
+      nodeEnv: 'production',
+      adminApiKey: undefined,
+    });
+    await prodApp.ready();
+
+    try {
+      const response = await prodApp.inject({
+        method: 'GET',
+        url: '/api/v1/cache/clear',
+      });
+
+      expect(response.statusCode).toBe(404);
+    } finally {
+      await prodApp.close();
+    }
   });
 });
