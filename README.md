@@ -48,13 +48,15 @@ Edit `.env`:
 | -------- | ------- |
 | `STEAM_API_KEY` | Steam Web API key (required; never expose to the browser) |
 | `FRONTEND_ORIGIN` | CORS origin of the UI |
+| `ADMIN_API_KEY` | Shared secret for `X-Admin-Key` on cache-clear / library-refresh |
 | `RATE_LIMIT_MAX` | Max requests per window |
 | `RATE_LIMIT_WINDOW_MS` | Rate-limit window |
 
 Set `FRONTEND_ORIGIN` to the origin you actually open in the browser:
 
 - Local npm or `docker compose` (dev): `http://localhost:4200`
-- Prod-like nginx compose: `http://localhost:8080` (or your public origin)
+- Prod-like nginx compose: `http://localhost:8080`
+- Public Cloudflare Tunnel: `https://steamstats.quantumcode.dev` (or your real HTTPS origin)
 
 ```bash
 npm ci
@@ -97,13 +99,13 @@ docker compose up --build
 
 The frontend container uses `frontend/proxy.conf.json` (`/api` → `http://backend:3000`).
 
-**Production-like** — multi-stage images; nginx on 8080, backend not published:
+**Production-like** — multi-stage images; nginx on `127.0.0.1:8080`, backend not published:
 
 ```bash
 docker compose -f docker-compose.prod.example.yml up --build -d
 ```
 
-UI: [http://localhost:8080](http://localhost:8080) (`/api` reverse-proxied by nginx)
+UI: [http://localhost:8080](http://localhost:8080) (`/api` reverse-proxied by nginx). The host bind is loopback-only so a Cloudflare Tunnel (or SSH) can reach it without exposing HTTP on the WAN.
 
 ---
 
@@ -170,9 +172,9 @@ All app routes are under `/api/v1`.
 | GET | `/api/v1/library/:steamId` | Owned games and library stats |
 | GET | `/api/v1/library/:steamId/random` | Random owned game |
 | GET | `/api/v1/library/:steamId/recent` | Games played in the last 2 weeks |
-| GET | `/api/v1/library/refresh` | Refresh cached Steam app list |
+| GET | `/api/v1/library/refresh` | Refresh cached Steam app list (`X-Admin-Key`) |
 | GET | `/api/v1/games/:appId` | Steam Store details for one app |
-| GET | `/api/v1/cache/clear` | Clear backend cache |
+| GET | `/api/v1/cache/clear` | Clear backend cache (`X-Admin-Key`) |
 | GET | `/health` | Liveness |
 
 ---
@@ -181,7 +183,38 @@ All app routes are under `/api/v1`.
 
 - `STEAM_API_KEY` is used only by the backend.
 - CORS is limited to `FRONTEND_ORIGIN`.
-- Helmet and rate limiting are enabled on the API.
+- Helmet and rate limiting are enabled on the API (`trustProxy` is on for Cloudflare / nginx).
+- Browser security headers (CSP, `X-Frame-Options: DENY`, `nosniff`, Referrer-Policy, HSTS, Permissions-Policy) are set in [`frontend/nginx.conf`](frontend/nginx.conf).
+- `GET /api/v1/cache/clear` and `GET /api/v1/library/refresh` require `X-Admin-Key` matching `ADMIN_API_KEY`. In production those routes return 404 if the key is unset.
+
+### Cloudflare Tunnel + Portainer
+
+TLS terminates at Cloudflare. Do not put certificates in the nginx container.
+
+| Setting | Where |
+| ------- | ----- |
+| Always Use HTTPS | SSL/TLS → Edge Certificates |
+| HSTS | Same page (skip preload until every subdomain is HTTPS). nginx also sends HSTS |
+| Minimum TLS 1.2 | SSL/TLS → Edge Certificates (1.3 if clients allow). Cipher control is limited on the free plan |
+| WAF (PCI 6.4) | Security → WAF → enable Cloudflare Managed Rules. Scanners may still say “no WAF” unless they see a challenge |
+| DNSSEC | DNS → Settings → Enable DNSSEC, then add the DS record at the registrar |
+| Report-To | Origin does not set this. Strip it with a Response Header Transform Rule, or disable Network Error Logging (the header is deprecated) |
+| Tunnel origin | `http://127.0.0.1:8080` (host) or `http://frontend:8080` (Docker network) |
+| `FRONTEND_ORIGIN` | `https://your-domain` in Portainer, not `localhost` |
+
+Rebuild and redeploy the frontend image after pulling these changes. ImmuniWeb findings for missing headers/CSP and “outdated Angular” are from the live image; `curl -sI https://steamstats.quantumcode.dev` must show CSP, HSTS, `X-Frame-Options`, and `nosniff` after deploy.
+
+If a scanner reports “HTTP port open” or “SSL not available”, confirm it probed the **Cloudflare hostname** rather than the VPS IP. Cloudflare port 80 should stay open so HTTP can redirect to HTTPS. Origin 80/8080/3000 and Portainer must not be published on the WAN.
+
+### What header/TLS scanners miss
+
+Re-scan after deploy with `curl -sI https://your-domain` and the original tools. Also cover:
+
+- Dependency SCA (`npm run check:audit`; Dependabot or osv-scanner for moderate issues)
+- Container image CVEs (`nginx:*-alpine`, `node:22-alpine`)
+- Secret scanning (Steam key, `.env`)
+- DAST against `/api/v1` (authz, CORS, XSS via Store HTML, rate limits, TRACE/PUT/DELETE)
+- Origin IP leak (DNS history, Portainer, SSH, Docker API)
 
 ---
 

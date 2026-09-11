@@ -19,6 +19,7 @@ export interface AppConfig {
   port: number;
   steamApiKey: string;
   frontendOrigin: string;
+  adminApiKey?: string;
   rateLimit: {
     max: number;
     timeWindowMs: number;
@@ -47,6 +48,7 @@ export function loadConfig(): AppConfig {
     port: Number(optionalEnv('PORT', '3000')),
     steamApiKey: requireEnv('STEAM_API_KEY'),
     frontendOrigin: optionalEnv('FRONTEND_ORIGIN', 'http://localhost:4200'),
+    adminApiKey: optionalEnv('ADMIN_API_KEY', '') || undefined,
     rateLimit: {
       max: Number(optionalEnv('RATE_LIMIT_MAX', '30')),
       timeWindowMs: Number(optionalEnv('RATE_LIMIT_WINDOW_MS', '60000')),

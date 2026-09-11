@@ -127,8 +127,8 @@ Output: `frontend/dist/steamstats/browser`.
 | File | Role |
 | ---- | ---- |
 | `dockerfile.dev` | `ng serve` for `docker compose.yml` (port 4200) |
-| `dockerfile` | nginx image for `docker-compose.prod.example.yml` (host 8080 → container 80) |
-| `nginx.conf` | SPA fallback + `/api/` proxy to the `backend` service |
+| `dockerfile` | nginx image for `docker-compose.prod.example.yml` (host `127.0.0.1:8080` → container 8080, non-root) |
+| `nginx.conf` | SPA fallback, `/api/` proxy, and browser security headers |
 
 ---
 

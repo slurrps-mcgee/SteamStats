@@ -13,6 +13,7 @@ describe('loadConfig', () => {
     delete process.env.HOST;
     delete process.env.PORT;
     delete process.env.FRONTEND_ORIGIN;
+    delete process.env.ADMIN_API_KEY;
     delete process.env.RATE_LIMIT_MAX;
     delete process.env.RATE_LIMIT_WINDOW_MS;
     process.env.NODE_ENV = 'test';
@@ -30,6 +31,15 @@ describe('loadConfig', () => {
         timeWindowMs: 60_000,
       },
     });
+    expect(config.adminApiKey).toBeUndefined();
+  });
+
+  it('loads ADMIN_API_KEY when set', () => {
+    process.env.STEAM_API_KEY = 'secret-key';
+    process.env.ADMIN_API_KEY = 'admin-secret';
+    process.env.NODE_ENV = 'test';
+
+    expect(loadConfig().adminApiKey).toBe('admin-secret');
   });
 
   it('throws when STEAM_API_KEY is missing', () => {

@@ -1,5 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 
+import { requireAdmin } from '../hooks/require-admin';
 import { StatusMessageSchema } from '../schemas/common.schema';
 
 const cacheRoute: FastifyPluginAsyncTypebox = async (fastify) => {
@@ -12,9 +13,11 @@ const cacheRoute: FastifyPluginAsyncTypebox = async (fastify) => {
           timeWindow: '1 minute',
         },
       },
+      preHandler: requireAdmin,
       schema: {
         tags: ['cache'],
         operationId: 'clearCache',
+        description: 'Requires the X-Admin-Key header matching ADMIN_API_KEY.',
         response: {
           200: StatusMessageSchema,
         },
