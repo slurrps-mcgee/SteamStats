@@ -1,4 +1,4 @@
-# Production-like deployment example — multi-stage images, nginx on :8080.
+# Production-like deployment example — multi-stage images, nginx on 127.0.0.1:8080.
 # Use with: docker compose -f docker-compose.prod.example.yml up --build -d
 
 services:
@@ -34,7 +34,9 @@ services:
       context: .
       dockerfile: frontend/dockerfile
     ports:
-      - "8080:8080"
+      # Loopback only so Cloudflare Tunnel can reach nginx without publishing
+      # HTTP on the host WAN (a common cause of "HTTP port open" scan findings).
+      - "127.0.0.1:8080:8080"
     depends_on:
       backend:
         condition: service_healthy

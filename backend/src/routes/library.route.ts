@@ -1,5 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 
+import { requireAdmin } from '../hooks/require-admin';
 import { ApiErrorSchema, StatusMessageSchema } from '../schemas/common.schema';
 import {
   LibraryResponseSchema,
@@ -84,9 +85,11 @@ const libraryRoute: FastifyPluginAsyncTypebox = async (fastify) => {
           timeWindow: '1 minute',
         },
       },
+      preHandler: requireAdmin,
       schema: {
         tags: ['library'],
         operationId: 'refreshApps',
+        description: 'Requires the X-Admin-Key header matching ADMIN_API_KEY.',
         response: {
           200: StatusMessageSchema,
         },

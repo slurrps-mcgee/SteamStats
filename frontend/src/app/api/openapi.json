@@ -601,6 +601,7 @@
         "tags": [
           "library"
         ],
+        "description": "Requires the X-Admin-Key header matching ADMIN_API_KEY.",
         "responses": {
           "200": {
             "description": "Default Response",
@@ -964,6 +965,7 @@
         "tags": [
           "cache"
         ],
+        "description": "Requires the X-Admin-Key header matching ADMIN_API_KEY.",
         "responses": {
           "200": {
             "description": "Default Response",
