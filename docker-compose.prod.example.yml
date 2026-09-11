@@ -34,7 +34,7 @@ services:
       context: .
       dockerfile: frontend/dockerfile
     ports:
-      - "8080:80"
+      - "8080:8080"
     depends_on:
       backend:
         condition: service_healthy
