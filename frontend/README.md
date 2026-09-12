@@ -45,6 +45,7 @@ frontend/
 ├── proxy.conf.json
 ├── proxy.conf.dev.json
 ├── nginx.conf
+├── nginx-security-headers.inc
 ├── dockerfile
 ├── dockerfile.dev
 └── package.json
@@ -129,6 +130,7 @@ Output: `frontend/dist/steamstats/browser`.
 | `dockerfile.dev` | `ng serve` for `docker compose.yml` (port 4200) |
 | `dockerfile` | nginx image for `docker-compose.prod.example.yml` (host `127.0.0.1:8080` → container 8080, non-root) |
 | `nginx.conf` | SPA fallback, `/api/` proxy, and browser security headers |
+| `nginx-security-headers.inc` | Shared HTML/static headers (repeat in every location that sets `add_header`) |
 
 ---
 
