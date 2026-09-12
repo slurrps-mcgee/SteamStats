@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 
-FROM node:22-alpine AS build
+# Official images via Google's Docker Hub mirror — registry-1.docker.io often 502s.
+FROM mirror.gcr.io/library/node:22-alpine AS build
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -12,7 +13,7 @@ RUN npm ci
 COPY frontend/ frontend/
 RUN npm run build --workspace=frontend -- --configuration production
 
-FROM nginx:1.27-alpine AS runtime
+FROM mirror.gcr.io/library/nginx:1.27-alpine AS runtime
 
 COPY frontend/nginx.main.conf /etc/nginx/nginx.conf
 COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
