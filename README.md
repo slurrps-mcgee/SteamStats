@@ -14,10 +14,10 @@ Steam credentials never leave the backend. The browser only talks to this app’
 
 SteamStats is an **npm workspaces** monorepo:
 
-| Package | Role |
-| ------- | ---- |
-| `frontend/` | Angular 22 SPA (Material + Tailwind) |
-| `backend/` | Fastify API that proxies Steam Web API and Store `appdetails` |
+| Package     | Role                                                          |
+| ----------- | ------------------------------------------------------------- |
+| `frontend/` | Angular 22 SPA (Material + Tailwind)                          |
+| `backend/`  | Fastify API that proxies Steam Web API and Store `appdetails` |
 
 The HTTP contract is OpenAPI. Live docs: [http://localhost:3000/docs](http://localhost:3000/docs). Architecture stays **one Fastify API process plus the Angular SPA** — OpenAPI does not mean splitting profile, library, or games into more services.
 
@@ -44,13 +44,13 @@ cp .env.example .env
 
 Edit `.env`:
 
-| Variable | Purpose |
-| -------- | ------- |
-| `STEAM_API_KEY` | Steam Web API key (required; never expose to the browser) |
-| `FRONTEND_ORIGIN` | CORS origin of the UI |
-| `ADMIN_API_KEY` | Shared secret for `X-Admin-Key` on cache-clear / library-refresh |
-| `RATE_LIMIT_MAX` | Max requests per window |
-| `RATE_LIMIT_WINDOW_MS` | Rate-limit window |
+| Variable               | Purpose                                                          |
+| ---------------------- | ---------------------------------------------------------------- |
+| `STEAM_API_KEY`        | Steam Web API key (required; never expose to the browser)        |
+| `FRONTEND_ORIGIN`      | CORS origin of the UI                                            |
+| `ADMIN_API_KEY`        | Shared secret for `X-Admin-Key` on cache-clear / library-refresh |
+| `RATE_LIMIT_MAX`       | Max requests per window                                          |
+| `RATE_LIMIT_WINDOW_MS` | Rate-limit window                                                |
 
 Set `FRONTEND_ORIGIN` to the origin you actually open in the browser:
 
@@ -165,17 +165,17 @@ Package-level detail: [backend/README.md](backend/README.md) · [frontend/README
 
 All app routes are under `/api/v1`.
 
-| Method | Path | Description |
-| ------ | ---- | ----------- |
-| POST | `/api/v1/profile/resolve` | Resolve SteamID64, profile URL, or vanity name |
-| GET | `/api/v1/profile/:steamId` | Normalized player profile |
-| GET | `/api/v1/library/:steamId` | Owned games and library stats |
-| GET | `/api/v1/library/:steamId/random` | Random owned game |
-| GET | `/api/v1/library/:steamId/recent` | Games played in the last 2 weeks |
-| GET | `/api/v1/library/refresh` | Refresh cached Steam app list (`X-Admin-Key`) |
-| GET | `/api/v1/games/:appId` | Steam Store details for one app |
-| GET | `/api/v1/cache/clear` | Clear backend cache (`X-Admin-Key`) |
-| GET | `/health` | Liveness |
+| Method | Path                              | Description                                    |
+| ------ | --------------------------------- | ---------------------------------------------- |
+| POST   | `/api/v1/profile/resolve`         | Resolve SteamID64, profile URL, or vanity name |
+| GET    | `/api/v1/profile/:steamId`        | Normalized player profile                      |
+| GET    | `/api/v1/library/:steamId`        | Owned games and library stats                  |
+| GET    | `/api/v1/library/:steamId/random` | Random owned game                              |
+| GET    | `/api/v1/library/:steamId/recent` | Games played in the last 2 weeks               |
+| GET    | `/api/v1/library/refresh`         | Refresh cached Steam app list (`X-Admin-Key`)  |
+| GET    | `/api/v1/games/:appId`            | Steam Store details for one app                |
+| GET    | `/api/v1/cache/clear`             | Clear backend cache (`X-Admin-Key`)            |
+| GET    | `/health`                         | Liveness                                       |
 
 ---
 
@@ -191,16 +191,16 @@ All app routes are under `/api/v1`.
 
 TLS terminates at Cloudflare. Do not put certificates in the nginx container.
 
-| Setting | Where |
-| ------- | ----- |
-| Always Use HTTPS | SSL/TLS → Edge Certificates |
-| HSTS | Same page (skip preload until every subdomain is HTTPS). nginx also sends HSTS |
-| Minimum TLS 1.2 | SSL/TLS → Edge Certificates (1.3 if clients allow). Cipher control is limited on the free plan |
-| WAF (PCI 6.4) | Security → WAF → enable Cloudflare Managed Rules. Scanners may still say “no WAF” unless they see a challenge |
-| DNSSEC | DNS → Settings → Enable DNSSEC, then add the DS record at the registrar |
-| Report-To | Origin does not set this. Strip it with a Response Header Transform Rule, or disable Network Error Logging (the header is deprecated) |
-| Tunnel origin | `http://127.0.0.1:8080` (host) or `http://frontend:8080` (Docker network) |
-| `FRONTEND_ORIGIN` | `https://your-domain` in Portainer, not `localhost` |
+| Setting           | Where                                                                                                                                 |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Always Use HTTPS  | SSL/TLS → Edge Certificates                                                                                                           |
+| HSTS              | Same page (skip preload until every subdomain is HTTPS). nginx also sends HSTS                                                        |
+| Minimum TLS 1.2   | SSL/TLS → Edge Certificates (1.3 if clients allow). Cipher control is limited on the free plan                                        |
+| WAF (PCI 6.4)     | Security → WAF → enable Cloudflare Managed Rules. Scanners may still say “no WAF” unless they see a challenge                         |
+| DNSSEC            | DNS → Settings → Enable DNSSEC, then add the DS record at the registrar                                                               |
+| Report-To         | Origin does not set this. Strip it with a Response Header Transform Rule, or disable Network Error Logging (the header is deprecated) |
+| Tunnel origin     | `http://127.0.0.1:8080` (host) or `http://frontend:8080` (Docker network)                                                             |
+| `FRONTEND_ORIGIN` | `https://your-domain` in Portainer, not `localhost`                                                                                   |
 
 Rebuild and redeploy the frontend image after pulling these changes. ImmuniWeb findings for missing headers/CSP and “outdated Angular” are from the live image; `curl -sI https://steamstats.quantumcode.dev` must show CSP, HSTS, `X-Frame-Options`, and `nosniff` after deploy.
 

@@ -57,15 +57,15 @@ Shared surfaces: `ss-panel`, `ss-panel-muted`, `ss-panel-error`, `ss-link` in `s
 
 ## Routes
 
-| Path | Page |
-| ---- | ---- |
-| `/dashboard` | Search + profile summary + stats |
-| `/library` | Filterable owned games |
-| `/random` | Random owned game |
-| `/statistics` | Playtime distribution |
-| `/settings` | Clear session |
-| `/game-details/:id` | Store details for one app |
-| `/privacy`, `/terms` | Legal |
+| Path                 | Page                             |
+| -------------------- | -------------------------------- |
+| `/dashboard`         | Search + profile summary + stats |
+| `/library`           | Filterable owned games           |
+| `/random`            | Random owned game                |
+| `/statistics`        | Playtime distribution            |
+| `/settings`          | Clear session                    |
+| `/game-details/:id`  | Store details for one app        |
+| `/privacy`, `/terms` | Legal                            |
 
 Unknown paths redirect to dashboard.
 
@@ -125,12 +125,12 @@ npm run build --workspace=frontend -- --configuration production
 
 Output: `frontend/dist/steamstats/browser`.
 
-| File | Role |
-| ---- | ---- |
-| `dockerfile.dev` | `ng serve` for `docker compose.yml` (port 4200) |
-| `dockerfile` | nginx image for `docker-compose.prod.example.yml` (host `127.0.0.1:8080` → container 8080, non-root) |
-| `nginx.conf` | SPA fallback, `/api/` proxy, and browser security headers |
-| `nginx-security-headers.inc` | Shared HTML/static headers (repeat in every location that sets `add_header`) |
+| File                         | Role                                                                                                 |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `dockerfile.dev`             | `ng serve` for `docker compose.yml` (port 4200)                                                      |
+| `dockerfile`                 | nginx image for `docker-compose.prod.example.yml` (host `127.0.0.1:8080` → container 8080, non-root) |
+| `nginx.conf`                 | SPA fallback, `/api/` proxy, and browser security headers                                            |
+| `nginx-security-headers.inc` | Shared HTML/static headers (repeat in every location that sets `add_header`)                         |
 
 ---
 
