@@ -41,6 +41,7 @@ jobs:
         context: .
         file: ./backend/dockerfile
         push: true
+        provenance: false
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/steamstats-backend:${{ env.BACKEND_VERSION }}
           ${{ secrets.DOCKER_USERNAME }}/steamstats-backend:latest
@@ -51,6 +52,7 @@ jobs:
         context: .
         file: ./frontend/dockerfile
         push: true
+        provenance: false
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/steamstats-frontend:${{ env.FRONTEND_VERSION }}
           ${{ secrets.DOCKER_USERNAME }}/steamstats-frontend:latest

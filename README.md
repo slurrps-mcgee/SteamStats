@@ -184,7 +184,7 @@ All app routes are under `/api/v1`.
 - `STEAM_API_KEY` is used only by the backend.
 - CORS is limited to `FRONTEND_ORIGIN`.
 - Helmet and rate limiting are enabled on the API (`trustProxy` is on for Cloudflare / nginx).
-- Browser security headers (CSP, `X-Frame-Options: DENY`, `nosniff`, Referrer-Policy, HSTS, Permissions-Policy) are set in [`frontend/nginx.conf`](frontend/nginx.conf). SPA routes use a named `@spa` location so those headers stay on `index.html` (nginx `add_header` does not inherit). CSP `img-src` allows `https:` so Steam CDN artwork can load.
+- Browser security headers (CSP, `X-Frame-Options: DENY`, `nosniff`, Referrer-Policy, HSTS, Permissions-Policy) are set in [`frontend/nginx.conf`](frontend/nginx.conf). SPA routes use a named `@spa` location so those headers stay on `index.html` (nginx `add_header` does not inherit). CSP `img-src` and `connect-src` allow `https:` so Steam CDN artwork can load (`ngsw-worker.js` does not get the page CSP, because the worker intercepts `<img>` fetches).
 - `GET /api/v1/cache/clear` and `GET /api/v1/library/refresh` require `X-Admin-Key` matching `ADMIN_API_KEY`. In production those routes return 404 if the key is unset.
 
 ### Cloudflare Tunnel + Portainer

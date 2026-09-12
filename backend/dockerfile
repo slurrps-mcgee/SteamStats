@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 
-FROM node:22-alpine AS build
+# Official images via Google's Docker Hub mirror — registry-1.docker.io often 502s.
+FROM mirror.gcr.io/library/node:22-alpine AS build
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -12,7 +13,7 @@ RUN npm ci
 COPY backend backend
 RUN npm run build --workspace=backend
 
-FROM node:22-alpine AS runtime
+FROM mirror.gcr.io/library/node:22-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 
