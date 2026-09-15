@@ -16,4 +16,7 @@ RUN chmod +x /app/scripts/docker-entrypoint.dev.sh
 
 EXPOSE 4200
 
+RUN chown -R 1000:1000 /app
+USER 1000
+
 CMD ["npm", "run", "start", "--workspace=frontend", "--", "--host", "0.0.0.0"]
