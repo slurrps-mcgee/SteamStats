@@ -8,6 +8,8 @@ services:
       dockerfile: backend/dockerfile
     env_file:
       - ./.env
+    environment:
+      HOST: "0.0.0.0"
     expose:
       - "3000"
     # Intentionally no `ports:` mapping - the backend must only be reachable

@@ -97,7 +97,7 @@ docker compose up --build
 - UI: [http://localhost:4200](http://localhost:4200)
 - API: [http://localhost:3000](http://localhost:3000)
 
-The frontend container uses `frontend/proxy.conf.json` (`/api` → `http://backend:3000`).
+The frontend container uses `frontend/proxy.conf.js` (`/api` → `http://backend:3000`).
 
 **Production-like** — multi-stage images; nginx on `127.0.0.1:8080`, backend not published:
 

@@ -18,7 +18,7 @@ UI: http://localhost:4200
 
 `ng serve` uses [`proxy.conf.dev.json`](proxy.conf.dev.json) so `/api` goes to `http://localhost:3000`.
 
-Docker Compose (dev) uses [`proxy.conf.json`](proxy.conf.json) (`http://backend:3000`) and `--host 0.0.0.0`.
+Docker Compose (dev) uses [`proxy.conf.js`](proxy.conf.js) (`http://backend:3000`) and `--host 0.0.0.0`.
 
 ---
 
@@ -42,7 +42,7 @@ frontend/
 │       ├── interceptors/
 │       ├── seo/                 # TitleStrategy + Meta/canonical
 │       └── utils/
-├── proxy.conf.json
+├── proxy.conf.js
 ├── proxy.conf.dev.json
 ├── nginx.conf
 ├── nginx-security-headers.inc
