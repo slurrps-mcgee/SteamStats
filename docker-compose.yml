@@ -15,6 +15,8 @@ services:
       - "3000:3000"
     env_file:
       - ./.env
+    environment:
+      HOST: "0.0.0.0"
     healthcheck:
       test:
         [
@@ -39,7 +41,8 @@ services:
       - .:/app
       - /app/node_modules
       - /app/frontend/node_modules
-      - /app/frontend/.angular
+    tmpfs:
+      - /app/frontend/.angular:uid=1000,gid=1000,mode=0755,exec
     entrypoint: ["/bin/sh", "/app/scripts/docker-entrypoint.dev.sh"]
     command:
       - npm
@@ -52,11 +55,12 @@ services:
       - --poll
       - "1000"
       - --proxy-config
-      - proxy.conf.json
+      - proxy.conf.js
     ports:
       - "4200:4200"
     environment:
       CHOKIDAR_USEPOLLING: "true"
+      NODE_OPTIONS: "--dns-result-order=ipv4first --no-network-family-autoselection"
     depends_on:
       backend:
         condition: service_healthy
